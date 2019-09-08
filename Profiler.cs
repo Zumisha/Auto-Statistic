@@ -27,6 +27,9 @@ namespace FPTL_Auto_Statistic
         private long statCount;
         private bool processCanceled = false;
         private bool exceededMemory = false;
+        private float curProcMem = 0;
+        private float curProcCPU = 0;
+
 
         private struct StatUnit
         {
@@ -184,14 +187,17 @@ namespace FPTL_Auto_Statistic
             }
 
             statCount++;
-            float curProcMem = CurRamUsage() / 1024 / 1024;
-            float curProcCPU = CurCpuUsage() / SystemStateInfo.TotalCpuUsage();
+            curProcMem = CurRamUsage() / 1024 / 1024;
+            curProcCPU = CurCpuUsage() / SystemStateInfo.TotalCpuUsage();
             if (curProcCPU < 0 || curProcCPU > 1 || Double.IsNaN(curProcCPU)) curProcCPU = evalStat.avgCpuUsage;
             if (curProcCPU > evalStat.maxCpuUsage) evalStat.maxCpuUsage = curProcCPU;
             evalStat.avgCpuUsage += (curProcCPU - evalStat.avgCpuUsage) / statCount;
             if (curProcMem > evalStat.maxMemUsage) evalStat.maxMemUsage = curProcMem;
 
-            History.Add(new StatUnit(curProcCPU, curProcMem, (DateTime.Now - startTime).TotalSeconds));
+            lock (History)
+            {
+                History.Add(new StatUnit(curProcCPU, curProcMem, (DateTime.Now - startTime).TotalSeconds));
+            }
         }
 
         private void SaveStoredStats(object obj = null)
@@ -209,6 +215,16 @@ namespace FPTL_Auto_Statistic
                     fs.WriteLine(stat.time.ToString("F") +  ";" + stat.cpuUsage.ToString("P2") + ";" + stat.ramUsage.ToString("F"));
                 }
             }
+        }
+
+        public float GetCurProcCpuUsage()
+        {
+            return curProcCPU;
+        }
+
+        public float GetCurProcMemUsage()
+        {
+            return curProcMem;
         }
     }
 }

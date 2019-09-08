@@ -27,6 +27,11 @@ namespace FPTL_Auto_Statistic
             public bool prohibitUsePageFile = true;
         }
 
+        private string[] coreParams = {
+            "--num-cores ",
+            "-n "
+        };
+
         private const string settingsPath = @".\settings.dat";
         private WindowState windowVars;
         private Profiler profiler;
@@ -307,7 +312,7 @@ namespace FPTL_Auto_Statistic
 
         private void backgroundWorker1_DoWork(object sender, DoWorkEventArgs e)
         {
-            //try
+            try
             {
                 string resultsFolderPath = @".\results\";
                 if (!Directory.Exists(resultsFolderPath)) Directory.CreateDirectory(resultsFolderPath);
@@ -322,10 +327,9 @@ namespace FPTL_Auto_Statistic
                 string logsFolderPath = curPath + @"\Logs\";
                 if (!Directory.Exists(logsFolderPath)) Directory.CreateDirectory(logsFolderPath);
 
+                backgroundWorker1.ReportProgress(0, "Сбор информации о системе.");
                 string sysInfoPath = curPath + @"\System-Info_" + curTime + ".csv";
                 if (File.Exists(sysInfoPath)) File.SetAttributes(sysInfoPath, FileAttributes.Normal);
-
-                backgroundWorker1.ReportProgress(0, "Сбор информации о системе.");
                 using (StreamWriter sysInfoFS = new StreamWriter(File.Create(sysInfoPath), Encoding.GetEncoding(1251)))
                     foreach (var infoType in FullSystemInfo.Get())
                     {
@@ -429,43 +433,44 @@ namespace FPTL_Auto_Statistic
                                     tasksCompleted++;
                                 }
 
-                                if (windowVars.launchNum == 1) results.variance = Double.NaN;
+                                if (windowVars.launchNum == 1) results.variance = Double.NaN;                             
+                                results.threadsCount = parseCoreNum(results.arguments);
+                                resFS.WriteLine(results.CsvResults());
 
                                 outLogFS.WriteLine("\n------------------------------------------------------------");
-
-                                string arg = results.arguments;
-                                int coreNum;
-                                string coreParam = "--num-cores ";
-                                int corePos = arg.IndexOf(coreParam, StringComparison.Ordinal);
-                                if (corePos == -1)
-                                {
-                                    coreParam = "-n ";
-                                    corePos = arg.IndexOf(coreParam, StringComparison.Ordinal);
-                                }
-
-                                if (corePos == -1) coreNum = 1;
-                                else
-                                {
-                                    arg = arg.Substring(corePos + coreParam.Length);
-                                    int splitPos = arg.IndexOf(" ", StringComparison.Ordinal);
-                                    if (splitPos != -1)
-                                        arg = arg.Substring(0, splitPos);
-                                    if (!Int32.TryParse(arg, out coreNum))
-                                        coreNum = 0;
-                                }
-
-                                results.threadsCount = coreNum;
-
-                                resFS.WriteLine(results.CsvResults());
                             }
                     }
                 }
 
             }
-            /*catch (Exception exc)
+            catch (Exception exc)
             {
                 MessageBox.Show(exc.Message, "Ошибка");
-            }//*/
+            }
+        }
+
+        private int parseCoreNum(string arguments)
+        {
+            int coreNum, corePos = -1, i = 0;
+            while (corePos == -1 && i < coreParams.Length)
+            {
+                corePos = arguments.IndexOf(coreParams[i], StringComparison.Ordinal);
+                ++i;
+            }
+            if (corePos == -1)
+            {
+                coreNum = 1;
+            }
+            else
+            {
+                string arg = arguments.Substring(corePos + coreParams.Length);
+                int splitPos = arg.IndexOf(" ", StringComparison.Ordinal);
+                if (splitPos != -1)
+                    arg = arg.Substring(0, splitPos);
+                if (!Int32.TryParse(arguments, out coreNum))
+                    coreNum = 0;
+            }
+            return coreNum;
         }
 
         private void backgroundWorker1_ProgressChanged(object sender, ProgressChangedEventArgs e)
@@ -489,12 +494,21 @@ namespace FPTL_Auto_Statistic
 
         private void timer1_Tick(object sender, EventArgs e)
         {
-            /*if (curProcMem > maxMemUsage) maxMemUsage = curProcMem;
-            if (curProcMem >= 1024) strCurProcMem = (curProcMem / 1024).ToString("F") + "GB";
-            else strCurProcMem = curProcMem.ToString("F") + "MB";*/
+            if (profiler != null)
+            {
+                string strCurProcMem;
+                float curProcMem = profiler.GetCurProcMemUsage();
+                if (curProcMem >= 1024) strCurProcMem = (curProcMem / 1024).ToString("F") + "GB";
+                else strCurProcMem = curProcMem.ToString("F") + "MB";
 
-            /*toolStripStatusLabelCPUmem.Text = "CPU: " + curProcCPU.ToString("P0");
-            toolStripStatusLabelMem.Text = "Mem: " + strCurProcMem;*/
+                toolStripStatusLabelCPUmem.Text = "CPU: " + profiler.GetCurProcCpuUsage().ToString("P0");
+                toolStripStatusLabelMem.Text = "Mem: " + strCurProcMem;
+            }
+            else
+            {
+                toolStripStatusLabelCPUmem.Text = "CPU: 0%";
+                toolStripStatusLabelMem.Text = "Mem: 0Б";
+            }
         }
     }
 }
