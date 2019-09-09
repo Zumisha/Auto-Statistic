@@ -140,7 +140,7 @@
             this.buttonCooseProgramFiles.TabIndex = 16;
             this.buttonCooseProgramFiles.Text = "Выбрать файлы программ";
             this.buttonCooseProgramFiles.UseVisualStyleBackColor = true;
-            this.buttonCooseProgramFiles.Click += new System.EventHandler(this.buttonCooseProgramFiles_Click);
+            this.buttonCooseProgramFiles.Click += new System.EventHandler(this.buttonChooseProgramFiles_Click);
             // 
             // textBoxProgramFiles
             // 
@@ -352,7 +352,6 @@
             this.checkBoxMemControl.TabIndex = 32;
             this.checkBoxMemControl.Text = " Завершать процесс выполнения программы, если заканчивается оперативная память.";
             this.checkBoxMemControl.UseVisualStyleBackColor = true;
-            this.checkBoxMemControl.Visible = false;
             // 
             // Main
             // 

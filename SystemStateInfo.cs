@@ -200,14 +200,14 @@ namespace FPTL_Auto_Statistic
         }
         public class RamInfo
         {
-            public readonly long totalRamSize;
+            public readonly long totalRamSizeMB;
             public readonly string ramType;
             public readonly int ramFrequency;
             public readonly int numberOfRamChannels;
 
-            public RamInfo(long totalRamSize, string ramType, int ramFrequency, int numberOfRamChannels)
+            public RamInfo(long totalRamSizeMb, string ramType, int ramFrequency, int numberOfRamChannels)
             {
-                this.totalRamSize = totalRamSize;
+                this.totalRamSizeMB = totalRamSizeMb;
                 this.ramType = ramType;
                 this.ramFrequency = ramFrequency;
                 this.numberOfRamChannels = numberOfRamChannels;

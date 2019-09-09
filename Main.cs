@@ -27,7 +27,7 @@ namespace FPTL_Auto_Statistic
             public bool prohibitUsePageFile = true;
         }
 
-        private string[] coreParams = {
+        private readonly string[] coreParams = {
             "--num-cores ",
             "-n "
         };
@@ -171,7 +171,7 @@ namespace FPTL_Auto_Statistic
             textBoxExecutorPath.Text = windowVars.fptlPath;
         }
 
-        private void buttonCooseProgramFiles_Click(object sender, EventArgs e)
+        private void buttonChooseProgramFiles_Click(object sender, EventArgs e)
         {
             OpenFileDialog OPF = new OpenFileDialog { Multiselect = true, Title = "Выберите файлы FPTL программ.", CheckFileExists = true };
             if (OPF.ShowDialog() != DialogResult.OK || OPF.FileName == String.Empty) return;
@@ -281,7 +281,11 @@ namespace FPTL_Auto_Statistic
         {
             backgroundWorker1.CancelAsync();
             profiler.CancelProcess();
-            while (backgroundWorker1.IsBusy) Thread.Sleep(1);
+            while (backgroundWorker1.IsBusy)
+            {
+                Application.DoEvents();
+                Thread.Sleep(100);
+            }
             buttonCancel.Enabled = false;
             buttonPause.Enabled = false;
             buttonContinue.Enabled = false;
@@ -310,6 +314,18 @@ namespace FPTL_Auto_Statistic
             aboutBox.ShowDialog();
         }
 
+        private void writeFullSystemInfo(string path)
+        {
+            if (File.Exists(path)) File.SetAttributes(path, FileAttributes.Normal);
+            using (StreamWriter sysInfoFS = new StreamWriter(File.Create(path), Encoding.GetEncoding(1251)))
+                foreach (var infoType in FullSystemInfo.Get())
+                {
+                    sysInfoFS.WriteLine(infoType.Key + ";;");
+                    foreach (var info in infoType.Value)
+                        sysInfoFS.WriteLine(";" + info.Key + ";" + info.Value);
+                }
+        }
+
         private void backgroundWorker1_DoWork(object sender, DoWorkEventArgs e)
         {
             try
@@ -321,28 +337,20 @@ namespace FPTL_Auto_Statistic
                 curPath = resultsFolderPath + @"\" + curTime + @"\";
                 if (!Directory.Exists(curPath)) Directory.CreateDirectory(curPath);
 
+                backgroundWorker1.ReportProgress(0, "Сбор информации о системе.");
+                string sysInfoPath = curPath + @"\System-Info_" + curTime + ".csv";
+                writeFullSystemInfo(sysInfoPath);
+
                 string profilerFolderPath = curPath + @"\Profiler\";
                 if (!Directory.Exists(profilerFolderPath)) Directory.CreateDirectory(profilerFolderPath);
 
                 string logsFolderPath = curPath + @"\Logs\";
                 if (!Directory.Exists(logsFolderPath)) Directory.CreateDirectory(logsFolderPath);
 
-                backgroundWorker1.ReportProgress(0, "Сбор информации о системе.");
-                string sysInfoPath = curPath + @"\System-Info_" + curTime + ".csv";
-                if (File.Exists(sysInfoPath)) File.SetAttributes(sysInfoPath, FileAttributes.Normal);
-                using (StreamWriter sysInfoFS = new StreamWriter(File.Create(sysInfoPath), Encoding.GetEncoding(1251)))
-                    foreach (var infoType in FullSystemInfo.Get())
-                    {
-                        sysInfoFS.WriteLine(infoType.Key + ";;");
-                        foreach (var info in infoType.Value)
-                            sysInfoFS.WriteLine(";" + info.Key + ";" + info.Value);
-                    }
-
                 string resultsPath = curPath + @"\Results_" + curTime + ".csv";
                 if (File.Exists(resultsPath)) File.SetAttributes(resultsPath, FileAttributes.Normal);
 
                 int tasksCompleted = 0;
-
                 using (StreamWriter resFS = new StreamWriter(File.Create(resultsPath), Encoding.GetEncoding(1251)))
                 {
                     resFS.WriteLine(Results.CsvNames());
@@ -350,45 +358,49 @@ namespace FPTL_Auto_Statistic
                     foreach (string program in windowVars.programsPaths)
                     {
                         resFS.WriteLine(Results.CsvEmpty());
-                        Results results = new Results();
-                        results.programName = Path.GetFileNameWithoutExtension(program);
 
-                        string logPath = logsFolderPath + @"\Log_" + results.programName + "_" + curTime + ".txt";
+                        string programPath = Path.GetFileNameWithoutExtension(program);
+                        string logPath = logsFolderPath + @"\Log_" + programPath + "_" + curTime + ".txt";
                         if (File.Exists(logPath)) File.SetAttributes(logPath, FileAttributes.Normal);
 
-                        using (StreamWriter outLogFS =
-                            new StreamWriter(File.Create(logPath), Encoding.GetEncoding(1251)))
+                        using (StreamWriter outLogFS = new StreamWriter(File.Create(logPath), Encoding.GetEncoding(1251)))
                             for (int par = 0; par < windowVars.startParams.Count; ++par)
                             {
-                                results.arguments = windowVars.startParams[par];
-                                results.avgExecTime = 0;
-                                results.variance = 0;
-                                results.maxCpuUsage = 0;
-                                results.maxMemUsage = 0;
-                                results.avgCpuUsage = 0;
-                                results.execStatus = "Success";
+                                Results results = new Results
+                                {
+                                    programName = programPath,
+                                    arguments = windowVars.startParams[par],
+                                    avgExecTime = 0,
+                                    variance = 0,
+                                    maxCpuUsage = 0,
+                                    maxMemUsage = 0,
+                                    avgCpuUsage = 0,
+                                    execStatus = "Success"
+                                };
 
                                 outLogFS.WriteLine(results.arguments);
                                 outLogFS.WriteLine("------------------------------------------------------------");
 
                                 int n = 0;
-                                int iteration;
-                                for (iteration = 1; iteration <= windowVars.launchNum; ++iteration)
+                                for (int iteration = 1; iteration <= windowVars.launchNum; ++iteration)
                                 {
-                                    if (backgroundWorker1.CancellationPending) return;
-                                    backgroundWorker1.ReportProgress(tasksCompleted,
+                                    if (backgroundWorker1.CancellationPending)
+                                    {
+                                        profiler = null;
+                                        return;
+                                    }
+
+                                    backgroundWorker1.ReportProgress(tasksCompleted, 
                                         "Набор №" + (par + 1) + ". Проход №" + iteration + ". " + results.programName);
-                                    outLogFS.WriteLine(
-                                        "\n____________________________________________________________\n");
+
+                                    outLogFS.WriteLine("\n____________________________________________________________\n");
                                     outLogFS.WriteLine("Iteration: " + iteration + "\n");
 
                                     string profilerPath = profilerFolderPath + @"\" + results.programName + "_" +
                                                           results.arguments + "_" + iteration + "_" + curTime + ".csv";
-                                    if (File.Exists(profilerPath))
-                                        File.SetAttributes(profilerPath, FileAttributes.Normal);
+                                    if (File.Exists(profilerPath)) File.SetAttributes(profilerPath, FileAttributes.Normal);
                                     profiler = new Profiler(windowVars.fptlPath,
-                                        "--source-file \"" + program + "\" " + results.arguments,
-                                        profilerPath);
+                                        "--source-file \"" + program + "\" " + results.arguments, profilerPath, windowVars.prohibitUsePageFile);
 
                                     Profiler.ProfilerStatistic stats = profiler.StartProcess();
                                     int successCheck = stats.programResult.IndexOf("Time", StringComparison.Ordinal);
@@ -398,7 +410,7 @@ namespace FPTL_Auto_Statistic
                                         outLogFS.WriteLine("Exceeded memory!\n");
                                         break;
                                     }
-                                    else if (profiler.IsProcessCanceled())
+                                    if (profiler.IsProcessCanceled())
                                     {
                                         results.execStatus = "Canceled";
                                         outLogFS.WriteLine("Canceled!\n");
@@ -413,22 +425,16 @@ namespace FPTL_Auto_Statistic
                                         ++n;
                                         if (n > 1)
                                         {
-                                            results.variance =
-                                                (results.variance + Math.Pow(stats.execTime - results.avgExecTime, 2)
-                                                 / n - results.variance / (n - 1));
+                                            results.variance = (results.variance + Math.Pow(stats.execTime - results.avgExecTime, 2) / n -
+                                                                results.variance / (n - 1));
                                         }
-
-                                        results.avgExecTime =
-                                            results.avgExecTime + (stats.execTime - results.avgExecTime) / n;
-                                        results.avgCpuUsage =
-                                            results.avgCpuUsage + (stats.avgCpuUsage - results.avgCpuUsage) / n;
-
-                                        if (results.maxMemUsage < stats.maxMemUsage)
-                                            results.maxMemUsage = stats.maxMemUsage;
-                                        if (results.maxCpuUsage < stats.maxCpuUsage)
-                                            results.maxCpuUsage = stats.maxCpuUsage;
+                                        results.avgExecTime = results.avgExecTime + (stats.execTime - results.avgExecTime) / n;
+                                        results.avgCpuUsage = results.avgCpuUsage + (stats.avgCpuUsage - results.avgCpuUsage) / n;
+                                        if (results.maxMemUsage < stats.maxMemUsage) results.maxMemUsage = stats.maxMemUsage;
+                                        if (results.maxCpuUsage < stats.maxCpuUsage) results.maxCpuUsage = stats.maxCpuUsage;
                                     }
 
+                                    profiler = null;
                                     outLogFS.WriteLine(stats.programResult);
                                     tasksCompleted++;
                                 }
@@ -507,7 +513,7 @@ namespace FPTL_Auto_Statistic
             else
             {
                 toolStripStatusLabelCPUmem.Text = "CPU: 0%";
-                toolStripStatusLabelMem.Text = "Mem: 0Б";
+                toolStripStatusLabelMem.Text = "Mem: 0MB";
             }
         }
     }

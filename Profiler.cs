@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Collections.Concurrent;
+using System.Linq.Expressions;
 
 namespace FPTL_Auto_Statistic
 {
@@ -18,7 +19,7 @@ namespace FPTL_Auto_Statistic
         private readonly string historySavePath;
         private PerformanceCounter processCpuUsage;
         private PerformanceCounter processRamUsage;
-        private const double criticalAvailableMemSizeMB = 100;
+        private static readonly double criticalAvailableMemSizeMB = 0.05 * FullSystemInfo.GeneralRamInfo.totalRamSizeMB;
         private const int maxMemHistorySize = 1024 * 32;
         private DateTime startTime;
         private List<StatUnit> History = new List<StatUnit>(maxMemHistorySize);
@@ -54,7 +55,7 @@ namespace FPTL_Auto_Statistic
             public string programResult = "";
         }
 
-        public Profiler(string path, string args, string historySavePath, int interval = 100, bool prohibitUsePageFile = true)
+        public Profiler(string path, string args, string historySavePath, bool prohibitUsePageFile = true, int interval = 100)
         {
             curProcess = new Process
             {
@@ -100,7 +101,7 @@ namespace FPTL_Auto_Statistic
             curProcess.PriorityClass = ProcessPriorityClass.BelowNormal;
             processCpuUsage = new PerformanceCounter("Process", "% Processor Time", curProcess.ProcessName);
             processRamUsage = new PerformanceCounter("Process", "Working Set", curProcess.ProcessName);
-            Timer statTimer = new Timer(GetCurStat, curProcess, 0, interval);
+            Timer statTimer = new Timer(GetCurStat, null, 0, interval);
             Timer saveTimer = new Timer(SaveStoredStats, null, 0, interval * (maxMemHistorySize - 100));
 
             curProcess.WaitForExit();
@@ -176,9 +177,8 @@ namespace FPTL_Auto_Statistic
             }
         }
 
-        private void GetCurStat(object obj)
+        private void GetCurStat(object obj = null)
         {
-            Process process = (Process) obj;
             if (prohibitUsePageFile && SystemStateInfo.AvailableRamSize() < criticalAvailableMemSizeMB)
             {
                 CancelProcess();
@@ -200,8 +200,10 @@ namespace FPTL_Auto_Statistic
             }
         }
 
+        private static Mutex mtx = new Mutex();
         private void SaveStoredStats(object obj = null)
         {
+            mtx.WaitOne();
             List<StatUnit> histCopy;
             lock (History)
             {
@@ -215,6 +217,7 @@ namespace FPTL_Auto_Statistic
                     fs.WriteLine(stat.time.ToString("F") +  ";" + stat.cpuUsage.ToString("P2") + ";" + stat.ramUsage.ToString("F"));
                 }
             }
+            mtx.ReleaseMutex();
         }
 
         public float GetCurProcCpuUsage()
