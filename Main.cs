@@ -1,4 +1,5 @@
 ﻿using System;
+using System.CodeDom.Compiler;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -6,34 +7,81 @@ using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Microsoft.CSharp;
 
-namespace FPTL_Auto_Statistic
+namespace Auto_Statistic
 {
     public partial class Main : Form
     {
         [Serializable]
-        private class WindowState
+        public class WindowVars
         {
             public string fptlPath = "";
             public List<string> programsPaths = new List<string>();
             public ushort launchNum = 10;
             public byte backProcLimit = 10;
             public List<string> startParams = new List<string>();
+            public List<string> results = new List<string>();
             public bool prohibitUsePageFile = true;
+            public string checkAlgorithm = defaultAlg;
         }
 
-        private readonly string[] coreParams = {
+        private static readonly Dictionary<string, string> providerOptions = new Dictionary<string, string>
+        {
+            {"CompilerVersion", "v4.0"}
+        };
+        private static readonly CSharpCodeProvider provider = new CSharpCodeProvider(providerOptions);
+        private static readonly CompilerParameters compilerParams = new CompilerParameters
+        {
+            GenerateInMemory = true,
+            GenerateExecutable = false
+        };
+
+        public static CompilerResults compileAlg(string text)
+        {
+            string program = "namespace Checker { public class Checker { public static bool Check(string output, string expected) {" + 
+                             text + "} } }";
+            CompilerResults checkRes = provider.CompileAssemblyFromSource(compilerParams, program);
+
+            if (checkRes.Errors.Count == 0)
+            {
+                checkAlg = checkRes.CompiledAssembly.CreateInstance("Checker.Checker");
+                windowVars.checkAlgorithm = text;
+            }
+
+            /*
+            string[] outFile = System.IO.File.ReadAllText("out.txt").Replace("\n"," ").Trim().Split(' ');
+            string[] refFile = System.IO.File.ReadAllText("reference.txt").Replace("\n", " ").Trim().Split(' ');
+            for (var i = 0; i < System.Math.Min(outFile.Length,refFile.Length); ++i)
+            {
+                if (System.Math.Abs(double.Parse(outFile[i]) - double.Parse(refFile[i])) > double.Epsilon)
+                {
+                    return false;
+                }
+            }
+            return true;
+            */
+            return checkRes;
+        }
+
+        public static readonly string defaultAlg =
+@"return (output.IndexOf(""Error"") == -1) && 
+(output.IndexOf(expected) != -1);";
+
+        private static readonly string[] coreParams = {
             "--num-cores ",
             "-n "
         };
 
         private const string settingsPath = @".\settings.dat";
-        private WindowState windowVars;
+        public static WindowVars windowVars = new WindowVars();
+        public static object checkAlg;
         private Profiler profiler;
         private string curPath;
 
@@ -90,6 +138,7 @@ namespace FPTL_Auto_Statistic
             {
                 dataGridViewLaunchParametrs.Rows[i].HeaderCell.Value = (i + 1).ToString();
                 dataGridViewLaunchParametrs.Rows[i].Cells[0].Value = windowVars.startParams[i];
+                dataGridViewLaunchParametrs.Rows[i].Cells[1].Value = windowVars.results[i];
             }
 
             checkBoxMemControl.Checked = windowVars.prohibitUsePageFile;
@@ -97,7 +146,7 @@ namespace FPTL_Auto_Statistic
             textBoxMaxBackCPUusage.Text = windowVars.backProcLimit.ToString();
         }
 
-        private WindowState ReadSettingsFile(string path)
+        private WindowVars ReadSettingsFile(string path)
         {
             if (File.Exists(path))
             {
@@ -106,47 +155,69 @@ namespace FPTL_Auto_Statistic
                     using (FileStream fs = new FileStream(path, FileMode.Open, FileAccess.Read))
                     {
                         BinaryFormatter formatter = new BinaryFormatter();
-                        WindowState state = (WindowState)formatter.Deserialize(fs);
+                        WindowVars state = (WindowVars)formatter.Deserialize(fs);
 
-                        if (!String.IsNullOrEmpty(state.fptlPath) && !File.Exists(state.fptlPath))
+                        if (String.IsNullOrEmpty(state.fptlPath) || !File.Exists(state.fptlPath))
                             state.fptlPath = "";
-                        
+
+                        if (state.programsPaths == null) state.programsPaths = new List<string>();
+                        List<string> removePathList = new List<string>();
                         foreach (string programPath in state.programsPaths)
                         {
                             if (String.IsNullOrEmpty(programPath) || !File.Exists(programPath))
-                                state.programsPaths.Remove(programPath);
+                                removePathList.Add(programPath);
+                        }
+                        foreach (string programPath in removePathList)
+                        {
+                            state.programsPaths.Remove(programPath);
                         }
 
-                        foreach (string startParam in state.startParams)
+                        if (state.startParams == null) state.startParams = new List<string>();
+                        if (state.results == null) state.results = new List<string>();
+                        while (state.results.Count < state.startParams.Count) state.results.Add("");
+                        List<int> removeIndexList = new List<int>();
+                        for (var i = 0; i < state.startParams.Count; ++i)
                         {
-                            if (String.IsNullOrEmpty(startParam))
-                                state.startParams.Remove(startParam);
+                            if (String.IsNullOrEmpty(state.startParams[i]))
+                            {
+                                removeIndexList.Add(i);
+                            }
+                            else if (String.IsNullOrEmpty(state.results[i]))
+                                state.results[i] = "";
+                        }
+                        for (var j = removeIndexList.Count-1; j>=0; --j)
+                        {
+                            state.startParams.RemoveAt(removeIndexList[j]);
+                            state.results.RemoveAt(removeIndexList[j]);
                         }
 
                         if (state.launchNum <= 0) state.launchNum = 10;
-                        if (state.launchNum < 0 || state.backProcLimit > 100) state.backProcLimit = 100;
+                        if (state.backProcLimit <= 0 || state.backProcLimit > 100) state.backProcLimit = 100;
+
+                        if (String.IsNullOrEmpty(state.checkAlgorithm) || compileAlg(state.checkAlgorithm).Errors.Count != 0)
+                        {
+                            state.checkAlgorithm = defaultAlg;
+                            compileAlg(state.checkAlgorithm);
+                        }
 
                         return state;
                     }
                 }
-                catch (Exception ex)
+                catch (Exception exc)
                 {
-                    MessageBox.Show("Файл настроек повреждён\nнастройки будут сброшены.", "Ошибка");
+                    MessageBox.Show("Файл настроек повреждён.\n" + exc.Message, "Ошибка");
                 }
             }
-            return new WindowState();
+            return new WindowVars();
         }
 
-        private void Form1_FormClosing(object sender, FormClosingEventArgs e)
+        private void SaveSettingsFile(string path)
         {
-            if (backgroundWorker1.IsBusy)
-                buttonCancel_Click(sender, e);
-            ReadFormFields();
             try
             {
-                if (File.Exists(settingsPath))
-                    File.SetAttributes(settingsPath, FileAttributes.Normal);
-                using (FileStream fs = new FileStream(settingsPath, FileMode.Create, FileAccess.Write))
+                if (File.Exists(path))
+                    File.SetAttributes(path, FileAttributes.Normal);
+                using (FileStream fs = new FileStream(path, FileMode.Create, FileAccess.Write))
                 {
                     BinaryFormatter formatter = new BinaryFormatter();
                     formatter.Serialize(fs, windowVars);
@@ -156,6 +227,14 @@ namespace FPTL_Auto_Statistic
             {
                 MessageBox.Show("Не удалось сохранить настройки.\n" + exc.Message, "Ошибка");
             }
+        }
+
+        private void Form1_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            if (backgroundWorker1.IsBusy)
+                buttonCancel_Click(sender, e);
+            ReadFormFields();
+            SaveSettingsFile(settingsPath);
         }
 
         private void выходToolStripMenuItem_Click(object sender, EventArgs e)
@@ -269,11 +348,22 @@ namespace FPTL_Auto_Statistic
             windowVars.prohibitUsePageFile = checkBoxMemControl.Checked;
 
             windowVars.startParams.Clear();
+            windowVars.results.Clear();
             for (int i = 0; i < dataGridViewLaunchParametrs.Rows.Count - 1; ++i)
             {
-                string startParam = dataGridViewLaunchParametrs.Rows[i].Cells[0].Value.ToString();
-                if (!String.IsNullOrEmpty(startParam))
-                    windowVars.startParams.Add(startParam);
+                if (dataGridViewLaunchParametrs.Rows[i].Cells[0].Value != null)
+                {
+                    var startParam = dataGridViewLaunchParametrs.Rows[i].Cells[0].Value.ToString();
+                    if (!String.IsNullOrEmpty(startParam))
+                    {
+                        windowVars.startParams.Add(startParam);
+
+                        string result = "";
+                        if (dataGridViewLaunchParametrs.Rows[i].Cells[1].Value != null)
+                            result = dataGridViewLaunchParametrs.Rows[i].Cells[1].Value.ToString();
+                        windowVars.results.Add(result);
+                    }
+                }
             }
         }
 
@@ -390,8 +480,14 @@ namespace FPTL_Auto_Statistic
                                         return;
                                     }
 
-                                    backgroundWorker1.ReportProgress(tasksCompleted, 
+                                    backgroundWorker1.ReportProgress(tasksCompleted,
                                         "Набор №" + (par + 1) + ". Проход №" + iteration + ". " + results.programName);
+
+                                    if (results.execStatus != "Success")
+                                    {
+                                        tasksCompleted++;
+                                        continue;
+                                    }
 
                                     outLogFS.WriteLine("\n____________________________________________________________\n");
                                     outLogFS.WriteLine("Iteration: " + iteration + "\n");
@@ -400,10 +496,25 @@ namespace FPTL_Auto_Statistic
                                                           results.arguments + "_" + iteration + "_" + curTime + ".csv";
                                     if (File.Exists(profilerPath)) File.SetAttributes(profilerPath, FileAttributes.Normal);
                                     profiler = new Profiler(windowVars.fptlPath,
-                                        "--source-file \"" + program + "\" " + results.arguments, profilerPath, windowVars.prohibitUsePageFile);
+                                        "\"" + program + "\" " + results.arguments, profilerPath, windowVars.prohibitUsePageFile);
 
                                     Profiler.ProfilerStatistic stats = profiler.StartProcess();
-                                    int successCheck = stats.programResult.IndexOf("Time", StringComparison.Ordinal);
+                                    string res = "";
+                                    if (!String.IsNullOrEmpty(windowVars.results[par]))
+                                        res = windowVars.results[par];
+
+                                    bool success = false;
+                                    MethodInfo check = checkAlg.GetType().GetMethod("Check");
+                                    try
+                                    {
+                                        success = (bool)check.Invoke(null, new object[] { stats.programResult, res });
+                                    }
+                                    catch (Exception exc)
+                                    {
+                                        MessageBox.Show(exc.InnerException?.Message);
+                                        return;
+                                    }
+
                                     if (profiler.IsExceededMemory())
                                     {
                                         results.execStatus = "Exceeded Memory";
@@ -415,7 +526,7 @@ namespace FPTL_Auto_Statistic
                                         results.execStatus = "Canceled";
                                         outLogFS.WriteLine("Canceled!\n");
                                     }
-                                    else if (successCheck == -1)
+                                    else if (!success)
                                     {
                                         results.execStatus = "Errored";
                                         outLogFS.WriteLine("Errored!\n");
@@ -451,29 +562,35 @@ namespace FPTL_Auto_Statistic
             }
             catch (Exception exc)
             {
-                MessageBox.Show(exc.Message, "Ошибка");
+                String errorTrace = "";
+                while (exc != null)
+                {
+                    errorTrace += exc.Message + "\n" + exc.StackTrace + "\n\n";
+                    exc = exc.InnerException;
+                }
+                MessageBox.Show(errorTrace, "Ошибка");
             }
         }
 
         private int parseCoreNum(string arguments)
         {
-            int coreNum, corePos = -1, i = 0;
-            while (corePos == -1 && i < coreParams.Length)
+            int coreNum, corePos = -1, i = -1;
+            while (corePos == -1 && i < coreParams.Length-1)
             {
-                corePos = arguments.IndexOf(coreParams[i], StringComparison.Ordinal);
                 ++i;
+                corePos = arguments.IndexOf(coreParams[i]);
             }
             if (corePos == -1)
             {
-                coreNum = 1;
+                coreNum = 0;
             }
             else
             {
-                string arg = arguments.Substring(corePos + coreParams.Length);
+                string arg = arguments.Substring(corePos + coreParams[i].Length);
                 int splitPos = arg.IndexOf(" ", StringComparison.Ordinal);
                 if (splitPos != -1)
                     arg = arg.Substring(0, splitPos);
-                if (!Int32.TryParse(arguments, out coreNum))
+                if (!Int32.TryParse(arg, out coreNum))
                     coreNum = 0;
             }
             return coreNum;
@@ -515,6 +632,37 @@ namespace FPTL_Auto_Statistic
                 toolStripStatusLabelCPUmem.Text = "CPU: 0%";
                 toolStripStatusLabelMem.Text = "Mem: 0MB";
             }
+        }
+
+        private void сохранитьКонфигурациюToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            SaveFileDialog SFD = new SaveFileDialog
+            {
+                Title = "Сохранить конфигурацию.",
+                Filter = "Конфигурация|*.ASconfig"
+            };
+            if (SFD.ShowDialog() != DialogResult.OK || SFD.FileName == String.Empty) return;
+            ReadFormFields();
+            SaveSettingsFile(SFD.FileName);
+        }
+
+        private void загрузитьКонфигурациюToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            OpenFileDialog OFD = new OpenFileDialog
+            {
+                Title = "Выберите файл с конфигурацией.",
+                CheckFileExists = true,
+                Filter = "Конфигурация|*.ASconfig"
+            };
+            if (OFD.ShowDialog() != DialogResult.OK || OFD.FileName == String.Empty) return;
+            windowVars = ReadSettingsFile(OFD.FileName);
+            InitFields();
+        }
+
+        private void задатьУсловиеПроверкиToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            CheckInput checkInput = new CheckInput();
+            checkInput.ShowDialog();
         }
     }
 }

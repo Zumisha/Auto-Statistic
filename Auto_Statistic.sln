@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.28010.2041
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FPTL_Auto_Statistic", "FPTL_Auto_Statistic.csproj", "{CD78B167-E3D8-4548-B7A1-9955D9FA0586}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Auto_Statistic", "Auto_Statistic.csproj", "{CD78B167-E3D8-4548-B7A1-9955D9FA0586}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

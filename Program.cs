@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace FPTL_Auto_Statistic
+namespace Auto_Statistic
 {
     static class Program
     {

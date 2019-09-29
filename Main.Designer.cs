@@ -1,4 +1,4 @@
-﻿namespace FPTL_Auto_Statistic
+﻿namespace Auto_Statistic
 {
     partial class Main
     {
@@ -31,7 +31,10 @@
             this.components = new System.ComponentModel.Container();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.файлToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.сохранитьКонфигурациюToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.загрузитьКонфигурациюToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.выходToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.задатьУсловиеПроверкиToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.справкаToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.оПрограммеToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.buttonChooseExecutor = new System.Windows.Forms.Button();
@@ -47,6 +50,7 @@
             this.buttonCancel = new System.Windows.Forms.Button();
             this.dataGridViewLaunchParametrs = new System.Windows.Forms.DataGridView();
             this.LaunchParametrs = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Check = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.toolStripProgressBar1 = new System.Windows.Forms.ToolStripProgressBar();
             this.toolStripStatusLabelCPUmem = new System.Windows.Forms.ToolStripStatusLabel();
@@ -54,7 +58,6 @@
             this.toolStripStatusLabelTask = new System.Windows.Forms.ToolStripStatusLabel();
             this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
-            this.buttonAddParametrs = new System.Windows.Forms.Button();
             this.buttonContinue = new System.Windows.Forms.Button();
             this.checkBoxMemControl = new System.Windows.Forms.CheckBox();
             this.menuStrip1.SuspendLayout();
@@ -66,6 +69,7 @@
             // 
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.файлToolStripMenuItem,
+            this.задатьУсловиеПроверкиToolStripMenuItem,
             this.справкаToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
@@ -77,17 +81,40 @@
             // файлToolStripMenuItem
             // 
             this.файлToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.сохранитьКонфигурациюToolStripMenuItem,
+            this.загрузитьКонфигурациюToolStripMenuItem,
             this.выходToolStripMenuItem});
             this.файлToolStripMenuItem.Name = "файлToolStripMenuItem";
             this.файлToolStripMenuItem.Size = new System.Drawing.Size(48, 19);
             this.файлToolStripMenuItem.Text = "Файл";
             // 
+            // сохранитьКонфигурациюToolStripMenuItem
+            // 
+            this.сохранитьКонфигурациюToolStripMenuItem.Name = "сохранитьКонфигурациюToolStripMenuItem";
+            this.сохранитьКонфигурациюToolStripMenuItem.Size = new System.Drawing.Size(219, 22);
+            this.сохранитьКонфигурациюToolStripMenuItem.Text = "Сохранить конфигурацию";
+            this.сохранитьКонфигурациюToolStripMenuItem.Click += new System.EventHandler(this.сохранитьКонфигурациюToolStripMenuItem_Click);
+            // 
+            // загрузитьКонфигурациюToolStripMenuItem
+            // 
+            this.загрузитьКонфигурациюToolStripMenuItem.Name = "загрузитьКонфигурациюToolStripMenuItem";
+            this.загрузитьКонфигурациюToolStripMenuItem.Size = new System.Drawing.Size(219, 22);
+            this.загрузитьКонфигурациюToolStripMenuItem.Text = "Загрузить конфигурацию";
+            this.загрузитьКонфигурациюToolStripMenuItem.Click += new System.EventHandler(this.загрузитьКонфигурациюToolStripMenuItem_Click);
+            // 
             // выходToolStripMenuItem
             // 
             this.выходToolStripMenuItem.Name = "выходToolStripMenuItem";
-            this.выходToolStripMenuItem.Size = new System.Drawing.Size(108, 22);
+            this.выходToolStripMenuItem.Size = new System.Drawing.Size(219, 22);
             this.выходToolStripMenuItem.Text = "Выход";
             this.выходToolStripMenuItem.Click += new System.EventHandler(this.выходToolStripMenuItem_Click);
+            // 
+            // задатьУсловиеПроверкиToolStripMenuItem
+            // 
+            this.задатьУсловиеПроверкиToolStripMenuItem.Name = "задатьУсловиеПроверкиToolStripMenuItem";
+            this.задатьУсловиеПроверкиToolStripMenuItem.Size = new System.Drawing.Size(167, 19);
+            this.задатьУсловиеПроверкиToolStripMenuItem.Text = "Задать алгоритм проверки";
+            this.задатьУсловиеПроверкиToolStripMenuItem.Click += new System.EventHandler(this.задатьУсловиеПроверкиToolStripMenuItem_Click);
             // 
             // справкаToolStripMenuItem
             // 
@@ -153,7 +180,7 @@
             this.textBoxProgramFiles.Name = "textBoxProgramFiles";
             this.textBoxProgramFiles.ReadOnly = true;
             this.textBoxProgramFiles.ScrollBars = System.Windows.Forms.ScrollBars.Both;
-            this.textBoxProgramFiles.Size = new System.Drawing.Size(794, 72);
+            this.textBoxProgramFiles.Size = new System.Drawing.Size(794, 93);
             this.textBoxProgramFiles.TabIndex = 15;
             // 
             // label2
@@ -246,11 +273,12 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.dataGridViewLaunchParametrs.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dataGridViewLaunchParametrs.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
-            this.LaunchParametrs});
-            this.dataGridViewLaunchParametrs.Location = new System.Drawing.Point(18, 284);
+            this.LaunchParametrs,
+            this.Check});
+            this.dataGridViewLaunchParametrs.Location = new System.Drawing.Point(18, 257);
             this.dataGridViewLaunchParametrs.Name = "dataGridViewLaunchParametrs";
             this.dataGridViewLaunchParametrs.RowHeadersWidth = 60;
-            this.dataGridViewLaunchParametrs.Size = new System.Drawing.Size(794, 125);
+            this.dataGridViewLaunchParametrs.Size = new System.Drawing.Size(794, 152);
             this.dataGridViewLaunchParametrs.TabIndex = 28;
             this.dataGridViewLaunchParametrs.RowsAdded += new System.Windows.Forms.DataGridViewRowsAddedEventHandler(this.dataGridViewLaunchParametrs_RowsAdded);
             this.dataGridViewLaunchParametrs.RowsRemoved += new System.Windows.Forms.DataGridViewRowsRemovedEventHandler(this.dataGridViewLaunchParametrs_RowsRemoved);
@@ -260,6 +288,12 @@
             this.LaunchParametrs.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
             this.LaunchParametrs.HeaderText = "Параметры запуска";
             this.LaunchParametrs.Name = "LaunchParametrs";
+            // 
+            // Check
+            // 
+            this.Check.HeaderText = "Проверка";
+            this.Check.Name = "Check";
+            this.Check.Width = 200;
             // 
             // statusStrip1
             // 
@@ -318,16 +352,6 @@
             this.backgroundWorker1.ProgressChanged += new System.ComponentModel.ProgressChangedEventHandler(this.backgroundWorker1_ProgressChanged);
             this.backgroundWorker1.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.backgroundWorker1_RunWorkerCompleted);
             // 
-            // buttonAddParametrs
-            // 
-            this.buttonAddParametrs.Location = new System.Drawing.Point(18, 249);
-            this.buttonAddParametrs.Name = "buttonAddParametrs";
-            this.buttonAddParametrs.Size = new System.Drawing.Size(794, 29);
-            this.buttonAddParametrs.TabIndex = 30;
-            this.buttonAddParametrs.Text = "Добавить набор параметров запуска";
-            this.buttonAddParametrs.UseVisualStyleBackColor = true;
-            this.buttonAddParametrs.Visible = false;
-            // 
             // buttonContinue
             // 
             this.buttonContinue.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
@@ -360,7 +384,6 @@
             this.ClientSize = new System.Drawing.Size(824, 561);
             this.Controls.Add(this.checkBoxMemControl);
             this.Controls.Add(this.buttonContinue);
-            this.Controls.Add(this.buttonAddParametrs);
             this.Controls.Add(this.statusStrip1);
             this.Controls.Add(this.dataGridViewLaunchParametrs);
             this.Controls.Add(this.buttonCancel);
@@ -410,7 +433,6 @@
         private System.Windows.Forms.Button buttonPause;
         private System.Windows.Forms.Button buttonCancel;
         private System.Windows.Forms.DataGridView dataGridViewLaunchParametrs;
-        private System.Windows.Forms.DataGridViewTextBoxColumn LaunchParametrs;
         private System.Windows.Forms.StatusStrip statusStrip1;
         private System.Windows.Forms.ToolStripProgressBar toolStripProgressBar1;
         private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabelTask;
@@ -418,9 +440,13 @@
         public System.ComponentModel.BackgroundWorker backgroundWorker1;
         public System.Windows.Forms.Timer timer1;
         private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabelMem;
-        private System.Windows.Forms.Button buttonAddParametrs;
         private System.Windows.Forms.Button buttonContinue;
         private System.Windows.Forms.CheckBox checkBoxMemControl;
+        private System.Windows.Forms.DataGridViewTextBoxColumn LaunchParametrs;
+        private System.Windows.Forms.DataGridViewTextBoxColumn Check;
+        private System.Windows.Forms.ToolStripMenuItem сохранитьКонфигурациюToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem загрузитьКонфигурациюToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem задатьУсловиеПроверкиToolStripMenuItem;
     }
 }
 

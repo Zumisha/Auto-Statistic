@@ -1,4 +1,4 @@
-﻿namespace FPTL_Auto_Statistic
+﻿namespace Auto_Statistic
 {
     partial class AboutBox
     {

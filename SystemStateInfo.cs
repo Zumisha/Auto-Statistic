@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 using System.Management;
 using Microsoft.Win32;
 
-namespace FPTL_Auto_Statistic
+namespace Auto_Statistic
 {
     public static class SystemStateInfo
     {

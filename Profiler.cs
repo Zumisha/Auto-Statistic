@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 using System.Collections.Concurrent;
 using System.Linq.Expressions;
 
-namespace FPTL_Auto_Statistic
+namespace Auto_Statistic
 {
     class Profiler
     {
@@ -87,7 +87,6 @@ namespace FPTL_Auto_Statistic
             exceededMemory = false;
             statCount = 0;
             evalStat = new ProfilerStatistic();
-            startTime = DateTime.Now;
 
             if (File.Exists(historySavePath)) File.SetAttributes(historySavePath, FileAttributes.Normal);
             using (StreamWriter fs = new StreamWriter(File.Create(historySavePath), Encoding.GetEncoding(1251)))
@@ -95,12 +94,20 @@ namespace FPTL_Auto_Statistic
                 fs.WriteLine("Time;CPU usage;RAM usage");
             }
 
+            startTime = DateTime.Now;
             curProcess.Start();
             curProcess.BeginOutputReadLine();
             curProcess.BeginErrorReadLine();
             curProcess.PriorityClass = ProcessPriorityClass.BelowNormal;
-            processCpuUsage = new PerformanceCounter("Process", "% Processor Time", curProcess.ProcessName);
-            processRamUsage = new PerformanceCounter("Process", "Working Set", curProcess.ProcessName);
+            try
+            {
+                processCpuUsage = new PerformanceCounter("Process", "% Processor Time", curProcess.ProcessName);
+                processRamUsage = new PerformanceCounter("Process", "Working Set", curProcess.ProcessName);
+            }
+            catch (Exception exc)
+            {
+            }
+
             Timer statTimer = new Timer(GetCurStat, null, 0, interval);
             Timer saveTimer = new Timer(SaveStoredStats, null, 0, interval * (maxMemHistorySize - 100));
 
