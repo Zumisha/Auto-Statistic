@@ -17,7 +17,7 @@ namespace Auto_Statistic
         public CheckInput()
         {
             InitializeComponent();
-            textBoxAlg.Text = Main.windowVars.checkAlgorithm;
+            textBoxAlg.Text = Main.windowVars.checkAlgorithmText;
         }
 
         private void buttonCancel_Click(object sender, EventArgs e)
@@ -27,9 +27,11 @@ namespace Auto_Statistic
 
         private void buttonOk_Click(object sender, EventArgs e)
         {
-            var res = Main.compileAlg(textBoxAlg.Text);
+            var res = Executor.compileAlg(textBoxAlg.Text);
             if (res.Errors.Count == 0)
             {
+                Main.checkAlgorithm = res.CompiledAssembly.CreateInstance("Checker.Checker");
+                Main.windowVars.checkAlgorithmText = textBoxAlg.Text;
                 Close();
             }
             else
@@ -45,7 +47,7 @@ namespace Auto_Statistic
 
         private void buttonDefault_Click(object sender, EventArgs e)
         {
-            textBoxAlg.Text = Main.defaultAlg;
+            textBoxAlg.Text = Executor.ExecutionParameters.defaultAlg;
         }
     }
 }

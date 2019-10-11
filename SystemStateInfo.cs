@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -13,7 +14,6 @@ namespace Auto_Statistic
 {
     public static class SystemStateInfo
     {
-
         private static readonly PerformanceCounter availableRamSize = new PerformanceCounter("Memory", "Available MBytes");
 
         private static readonly PerformanceCounter totalCpuUsage = new PerformanceCounter("Process", "% Processor Time", "_Total");
@@ -340,6 +340,18 @@ namespace Auto_Statistic
             }*/
 
             return info;
+        }
+
+        public static void WriteFullSystemInfo(string path)
+        {
+            if (File.Exists(path)) File.SetAttributes(path, FileAttributes.Normal);
+            using (StreamWriter sysInfoFS = new StreamWriter(File.Create(path), Encoding.GetEncoding(1251)))
+                foreach (var infoType in Get())
+                {
+                    sysInfoFS.WriteLine(infoType.Key + ";;");
+                    foreach (var info in infoType.Value)
+                        sysInfoFS.WriteLine(";" + info.Key + ";" + info.Value);
+                }
         }
     }
 }

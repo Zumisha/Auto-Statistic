@@ -94,6 +94,7 @@
     <Compile Include="CheckInput.Designer.cs">
       <DependentUpon>CheckInput.cs</DependentUpon>
     </Compile>
+    <Compile Include="Executor.cs" />
     <Compile Include="Main.cs">
       <SubType>Form</SubType>
     </Compile>

@@ -44,6 +44,7 @@
             this.textBoxAlg.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.textBoxAlg.Multiline = true;
             this.textBoxAlg.Name = "textBoxAlg";
+            this.textBoxAlg.ScrollBars = System.Windows.Forms.ScrollBars.Both;
             this.textBoxAlg.Size = new System.Drawing.Size(433, 164);
             this.textBoxAlg.TabIndex = 0;
             // 

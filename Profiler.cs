@@ -14,7 +14,8 @@ namespace Auto_Statistic
     class Profiler
     {
         private readonly Process curProcess;
-        private readonly int interval;
+        private int interval = 100;
+        private readonly int timeLimit = 0;
         private readonly bool prohibitUsePageFile;
         private readonly string historySavePath;
         private PerformanceCounter processCpuUsage;
@@ -55,7 +56,7 @@ namespace Auto_Statistic
             public string programResult = "";
         }
 
-        public Profiler(string path, string args, string historySavePath, bool prohibitUsePageFile = true, int interval = 100)
+        public Profiler(string path, string args, string historySavePath, bool prohibitUsePageFile = true, int timeLimit = 0)
         {
             curProcess = new Process
             {
@@ -74,8 +75,9 @@ namespace Auto_Statistic
             curProcess.ErrorDataReceived += ErrorReceived;
             curProcess.OutputDataReceived += DataReceived;
             this.historySavePath = historySavePath;
-            this.interval = interval;
             this.prohibitUsePageFile = prohibitUsePageFile;
+            if (timeLimit == 0) this.timeLimit = -1;
+            else this.timeLimit = 1000 * timeLimit;
         }
 
         public ProfilerStatistic StartProcess()
@@ -111,7 +113,12 @@ namespace Auto_Statistic
             Timer statTimer = new Timer(GetCurStat, null, 0, interval);
             Timer saveTimer = new Timer(SaveStoredStats, null, 0, interval * (maxMemHistorySize - 100));
 
-            curProcess.WaitForExit();
+            curProcess.WaitForExit(timeLimit);
+            if (!curProcess.HasExited)
+            {
+                CancelProcess();
+            }
+
             evalStat.execTime = (DateTime.Now - startTime).TotalSeconds;
             statTimer.Dispose();
             saveTimer.Dispose();

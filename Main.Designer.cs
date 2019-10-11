@@ -60,6 +60,10 @@
             this.backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
             this.buttonContinue = new System.Windows.Forms.Button();
             this.checkBoxMemControl = new System.Windows.Forms.CheckBox();
+            this.checkBoxInterpr = new System.Windows.Forms.CheckBox();
+            this.label1 = new System.Windows.Forms.Label();
+            this.textBoxTimeLimit = new System.Windows.Forms.TextBox();
+            this.label4 = new System.Windows.Forms.Label();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridViewLaunchParametrs)).BeginInit();
             this.statusStrip1.SuspendLayout();
@@ -135,12 +139,12 @@
             // 
             this.buttonChooseExecutor.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.buttonChooseExecutor.Location = new System.Drawing.Point(18, 35);
+            this.buttonChooseExecutor.Location = new System.Drawing.Point(177, 35);
             this.buttonChooseExecutor.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.buttonChooseExecutor.Name = "buttonChooseExecutor";
-            this.buttonChooseExecutor.Size = new System.Drawing.Size(794, 29);
+            this.buttonChooseExecutor.Size = new System.Drawing.Size(635, 29);
             this.buttonChooseExecutor.TabIndex = 18;
-            this.buttonChooseExecutor.Text = "Выбрать исполняемый файл интерпретатора FPTL";
+            this.buttonChooseExecutor.Text = "Выбрать исполняемые файлы";
             this.buttonChooseExecutor.UseVisualStyleBackColor = true;
             this.buttonChooseExecutor.Click += new System.EventHandler(this.buttonChooseExecutor_Click);
             // 
@@ -149,18 +153,20 @@
             this.textBoxExecutorPath.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.textBoxExecutorPath.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.textBoxExecutorPath.Location = new System.Drawing.Point(18, 69);
+            this.textBoxExecutorPath.Location = new System.Drawing.Point(19, 69);
             this.textBoxExecutorPath.Margin = new System.Windows.Forms.Padding(6, 8, 6, 8);
+            this.textBoxExecutorPath.Multiline = true;
             this.textBoxExecutorPath.Name = "textBoxExecutorPath";
             this.textBoxExecutorPath.ReadOnly = true;
-            this.textBoxExecutorPath.Size = new System.Drawing.Size(794, 26);
+            this.textBoxExecutorPath.ScrollBars = System.Windows.Forms.ScrollBars.Both;
+            this.textBoxExecutorPath.Size = new System.Drawing.Size(793, 65);
             this.textBoxExecutorPath.TabIndex = 17;
             // 
             // buttonCooseProgramFiles
             // 
             this.buttonCooseProgramFiles.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.buttonCooseProgramFiles.Location = new System.Drawing.Point(18, 119);
+            this.buttonCooseProgramFiles.Location = new System.Drawing.Point(22, 147);
             this.buttonCooseProgramFiles.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.buttonCooseProgramFiles.Name = "buttonCooseProgramFiles";
             this.buttonCooseProgramFiles.Size = new System.Drawing.Size(794, 29);
@@ -174,7 +180,7 @@
             this.textBoxProgramFiles.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.textBoxProgramFiles.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.textBoxProgramFiles.Location = new System.Drawing.Point(18, 153);
+            this.textBoxProgramFiles.Location = new System.Drawing.Point(22, 181);
             this.textBoxProgramFiles.Margin = new System.Windows.Forms.Padding(6, 8, 6, 8);
             this.textBoxProgramFiles.Multiline = true;
             this.textBoxProgramFiles.Name = "textBoxProgramFiles";
@@ -275,13 +281,13 @@
             this.dataGridViewLaunchParametrs.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.LaunchParametrs,
             this.Check});
-            this.dataGridViewLaunchParametrs.Location = new System.Drawing.Point(18, 257);
+            this.dataGridViewLaunchParametrs.Location = new System.Drawing.Point(22, 282);
             this.dataGridViewLaunchParametrs.Name = "dataGridViewLaunchParametrs";
             this.dataGridViewLaunchParametrs.RowHeadersWidth = 60;
-            this.dataGridViewLaunchParametrs.Size = new System.Drawing.Size(794, 152);
+            this.dataGridViewLaunchParametrs.Size = new System.Drawing.Size(794, 97);
             this.dataGridViewLaunchParametrs.TabIndex = 28;
-            this.dataGridViewLaunchParametrs.RowsAdded += new System.Windows.Forms.DataGridViewRowsAddedEventHandler(this.dataGridViewLaunchParametrs_RowsAdded);
-            this.dataGridViewLaunchParametrs.RowsRemoved += new System.Windows.Forms.DataGridViewRowsRemovedEventHandler(this.dataGridViewLaunchParametrs_RowsRemoved);
+            this.dataGridViewLaunchParametrs.RowsAdded += new System.Windows.Forms.DataGridViewRowsAddedEventHandler(this.dataGridViewLaunchParameters_RowsAdded);
+            this.dataGridViewLaunchParametrs.RowsRemoved += new System.Windows.Forms.DataGridViewRowsRemovedEventHandler(this.dataGridViewLaunchParameters_RowsRemoved);
             // 
             // LaunchParametrs
             // 
@@ -349,7 +355,6 @@
             this.backgroundWorker1.WorkerReportsProgress = true;
             this.backgroundWorker1.WorkerSupportsCancellation = true;
             this.backgroundWorker1.DoWork += new System.ComponentModel.DoWorkEventHandler(this.backgroundWorker1_DoWork);
-            this.backgroundWorker1.ProgressChanged += new System.ComponentModel.ProgressChangedEventHandler(this.backgroundWorker1_ProgressChanged);
             this.backgroundWorker1.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.backgroundWorker1_RunWorkerCompleted);
             // 
             // buttonContinue
@@ -367,21 +372,69 @@
             // 
             // checkBoxMemControl
             // 
-            this.checkBoxMemControl.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.checkBoxMemControl.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.checkBoxMemControl.AutoSize = true;
-            this.checkBoxMemControl.Location = new System.Drawing.Point(49, 415);
+            this.checkBoxMemControl.Checked = true;
+            this.checkBoxMemControl.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.checkBoxMemControl.Location = new System.Drawing.Point(52, 386);
             this.checkBoxMemControl.Name = "checkBoxMemControl";
-            this.checkBoxMemControl.Size = new System.Drawing.Size(699, 24);
+            this.checkBoxMemControl.Size = new System.Drawing.Size(695, 24);
             this.checkBoxMemControl.TabIndex = 32;
-            this.checkBoxMemControl.Text = " Завершать процесс выполнения программы, если заканчивается оперативная память.";
+            this.checkBoxMemControl.Text = "Завершать процесс выполнения программы, если заканчивается оперативная память.";
             this.checkBoxMemControl.UseVisualStyleBackColor = true;
+            // 
+            // checkBoxInterpr
+            // 
+            this.checkBoxInterpr.AutoSize = true;
+            this.checkBoxInterpr.Checked = true;
+            this.checkBoxInterpr.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.checkBoxInterpr.Location = new System.Drawing.Point(19, 38);
+            this.checkBoxInterpr.Name = "checkBoxInterpr";
+            this.checkBoxInterpr.Size = new System.Drawing.Size(151, 24);
+            this.checkBoxInterpr.TabIndex = 33;
+            this.checkBoxInterpr.Text = " Интерпретатор";
+            this.checkBoxInterpr.UseVisualStyleBackColor = true;
+            this.checkBoxInterpr.CheckedChanged += new System.EventHandler(this.checkBoxInterpr_CheckedChanged);
+            // 
+            // label1
+            // 
+            this.label1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(679, 416);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(65, 20);
+            this.label1.TabIndex = 35;
+            this.label1.Text = "секунд.";
+            // 
+            // textBoxTimeLimit
+            // 
+            this.textBoxTimeLimit.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.textBoxTimeLimit.Location = new System.Drawing.Point(611, 413);
+            this.textBoxTimeLimit.Name = "textBoxTimeLimit";
+            this.textBoxTimeLimit.Size = new System.Drawing.Size(66, 26);
+            this.textBoxTimeLimit.TabIndex = 36;
+            this.textBoxTimeLimit.Text = "600";
+            this.textBoxTimeLimit.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.textBoxTimeLimit_KeyPress);
+            // 
+            // label4
+            // 
+            this.label4.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(67, 416);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(538, 20);
+            this.label4.TabIndex = 37;
+            this.label4.Text = "Завершать процесс выполнения программы, если он длится дольше";
             // 
             // Main
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(824, 561);
+            this.Controls.Add(this.label4);
+            this.Controls.Add(this.textBoxTimeLimit);
+            this.Controls.Add(this.label1);
+            this.Controls.Add(this.checkBoxInterpr);
             this.Controls.Add(this.checkBoxMemControl);
             this.Controls.Add(this.buttonContinue);
             this.Controls.Add(this.statusStrip1);
@@ -447,6 +500,10 @@
         private System.Windows.Forms.ToolStripMenuItem сохранитьКонфигурациюToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem загрузитьКонфигурациюToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem задатьУсловиеПроверкиToolStripMenuItem;
+        private System.Windows.Forms.CheckBox checkBoxInterpr;
+        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.TextBox textBoxTimeLimit;
+        private System.Windows.Forms.Label label4;
     }
 }
 
