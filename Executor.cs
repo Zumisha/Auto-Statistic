@@ -75,6 +75,7 @@ namespace Auto_Statistic
             public List<string> referenceResults = new List<string>();
             public string checkAlgorithmText = defaultAlg;
             public ushort launchNum = 10;
+            public float variance = 0;
             public byte backProcLimit = 10;
             public bool prohibitUsePageFile = true;
             public bool Interpr = true;
@@ -121,7 +122,7 @@ namespace Auto_Statistic
             public string CsvResults()
             {
                 return CsvStringBuilder(programName, arguments, threadsCount.ToString(), avgExecTime.ToString("F3"),
-                    variance.ToString("F"), maxMemUsage.ToString("F"), maxCpuUsage.ToString("P2"),
+                    variance.ToString("F4"), maxMemUsage.ToString("F"), maxCpuUsage.ToString("P2"),
                     avgCpuUsage.ToString("P2"), execStatus);
             }
         }
@@ -133,6 +134,7 @@ namespace Auto_Statistic
             if (executionParameters.startParams.Count <= 0)
                 throw new Exception("Не указано ни одного параметра запуска!");
             if (executionParameters.launchNum <= 0) throw new Exception("Количество запусков должно быть больше нуля!");
+            if (executionParameters.variance < 0) throw new Exception("Среднеквадратичное отклонение должно быть больше нуля!");
 
             this.executionParameters = executionParameters;
 
@@ -183,9 +185,11 @@ namespace Auto_Statistic
                     {
                         resFS.WriteLine(Result.CsvEmpty());
 
-                        string executableName = Path.GetFileNameWithoutExtension(executable) + "_" +
-                                             Path.GetFileNameWithoutExtension(programTextFile);
-                        string logPath = logsFolderPath + @"\Log_" + executableName + "_" + curTime + ".txt";
+                        string executableName = (programTextFile == "") ? 
+                            Path.GetFileNameWithoutExtension(executable) : 
+                            $"{Path.GetFileNameWithoutExtension(executable)}_{Path.GetFileNameWithoutExtension(programTextFile)}";
+
+                        string logPath = $@"{logsFolderPath}\Log_{executableName}_{curTime}.txt";
                         if (File.Exists(logPath)) File.SetAttributes(logPath, FileAttributes.Normal);
 
                         using (StreamWriter outLogFS =
@@ -197,7 +201,7 @@ namespace Auto_Statistic
                                     programName = executableName,
                                     arguments = executionParameters.startParams[par],
                                     avgExecTime = 0,
-                                    variance = 0,
+                                    variance = double.NaN,
                                     maxCpuUsage = 0,
                                     maxMemUsage = 0,
                                     avgCpuUsage = 0,
@@ -212,9 +216,9 @@ namespace Auto_Statistic
                                 {
                                     if (cancel) return;
 
-                                    progressStatus = "Набор №" + (par + 1) + ". Проход №" + iteration + ". " + result.programName;
+                                    progressStatus = $"Набор №{par + 1}. Проход №{iteration}. {result.programName}";
 
-                                    if (result.execStatus != "Success")
+                                    if (result.execStatus != "Success" || result.variance < executionParameters.variance)
                                     {
                                         tasksCompleted++;
                                         continue;
@@ -222,10 +226,20 @@ namespace Auto_Statistic
 
                                     outLogFS.WriteLine(
                                         "\n____________________________________________________________\n");
-                                    outLogFS.WriteLine("Iteration: " + iteration + "\n");
+                                    outLogFS.WriteLine($"Iteration: {iteration}\n");
 
-                                    string profilerPath = profilerFolderPath + @"\" + result.programName + "_" +
-                                                          result.arguments + "_" + iteration + "_" + curTime + ".csv";
+                                    StringBuilder profilerPathBuilder = new StringBuilder();
+                                    profilerPathBuilder.Append($@"{profilerFolderPath}\{result.programName}_");
+                                    foreach (var ch in result.arguments)
+                                    {
+                                        if (!Path.GetInvalidFileNameChars().Contains(ch))
+                                        {
+                                            profilerPathBuilder.Append(ch);
+                                        }
+                                    }
+                                    profilerPathBuilder.Append($"_{iteration}_{curTime}.csv");
+                                    string profilerPath = profilerPathBuilder.ToString();
+
                                     if (File.Exists(profilerPath))
                                         File.SetAttributes(profilerPath, FileAttributes.Normal);
                                     if (String.IsNullOrEmpty(programTextFile))
@@ -239,7 +253,7 @@ namespace Auto_Statistic
                                     else
                                     {
                                         profiler = new Profiler(executable,
-                                            "\"" + programTextFile + "\" " + result.arguments,
+                                            $@"\{programTextFile}\{result.arguments}",
                                             profilerPath,
                                             executionParameters.prohibitUsePageFile,
                                             executionParameters.timeLimit);
@@ -282,7 +296,12 @@ namespace Auto_Statistic
                                     else
                                     {
                                         ++n;
-                                        if (n > 1)
+                                        if (n == 2)
+                                        {
+                                            result.variance = Math.Pow(stats.execTime - result.avgExecTime, 2) / 2;
+
+                                        }
+                                        else if (n > 2)
                                         {
                                             result.variance =
                                                 (result.variance +
@@ -304,8 +323,7 @@ namespace Auto_Statistic
                                     outLogFS.WriteLine(stats.programResult);
                                     tasksCompleted++;
                                 }
-
-                                if (executionParameters.launchNum == 1) result.variance = Double.NaN;
+                                
                                 result.threadsCount = parseCoreNum(result.arguments);
                                 resFS.WriteLine(result.CsvResults());
 

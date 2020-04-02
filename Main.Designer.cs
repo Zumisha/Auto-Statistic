@@ -37,7 +37,7 @@
             this.задатьУсловиеПроверкиToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.справкаToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.оПрограммеToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.buttonChooseExecutor = new System.Windows.Forms.Button();
+            this.buttonAddExecutors = new System.Windows.Forms.Button();
             this.textBoxExecutorPath = new System.Windows.Forms.TextBox();
             this.buttonCooseProgramFiles = new System.Windows.Forms.Button();
             this.textBoxProgramFiles = new System.Windows.Forms.TextBox();
@@ -64,6 +64,19 @@
             this.label1 = new System.Windows.Forms.Label();
             this.textBoxTimeLimit = new System.Windows.Forms.TextBox();
             this.label4 = new System.Windows.Forms.Label();
+            this.label5 = new System.Windows.Forms.Label();
+            this.textBox_varWord = new System.Windows.Forms.TextBox();
+            this.label6 = new System.Windows.Forms.Label();
+            this.textBox_leftVal = new System.Windows.Forms.TextBox();
+            this.label7 = new System.Windows.Forms.Label();
+            this.textBox_rightVal = new System.Windows.Forms.TextBox();
+            this.button_change = new System.Windows.Forms.Button();
+            this.button_erase = new System.Windows.Forms.Button();
+            this.buttonClearExecutions = new System.Windows.Forms.Button();
+            this.buttonClearProgramFiles = new System.Windows.Forms.Button();
+            this.label8 = new System.Windows.Forms.Label();
+            this.label9 = new System.Windows.Forms.Label();
+            this.textBox_variance = new System.Windows.Forms.TextBox();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridViewLaunchParametrs)).BeginInit();
             this.statusStrip1.SuspendLayout();
@@ -78,7 +91,7 @@
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
             this.menuStrip1.Padding = new System.Windows.Forms.Padding(9, 3, 0, 3);
-            this.menuStrip1.Size = new System.Drawing.Size(824, 25);
+            this.menuStrip1.Size = new System.Drawing.Size(884, 25);
             this.menuStrip1.TabIndex = 1;
             this.menuStrip1.Text = "menuStrip1";
             // 
@@ -135,75 +148,74 @@
             this.оПрограммеToolStripMenuItem.Text = "О программе";
             this.оПрограммеToolStripMenuItem.Click += new System.EventHandler(this.оПрограммеToolStripMenuItem_Click);
             // 
-            // buttonChooseExecutor
+            // buttonAddExecutors
             // 
-            this.buttonChooseExecutor.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.buttonChooseExecutor.Location = new System.Drawing.Point(177, 35);
-            this.buttonChooseExecutor.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
-            this.buttonChooseExecutor.Name = "buttonChooseExecutor";
-            this.buttonChooseExecutor.Size = new System.Drawing.Size(635, 29);
-            this.buttonChooseExecutor.TabIndex = 18;
-            this.buttonChooseExecutor.Text = "Выбрать исполняемые файлы";
-            this.buttonChooseExecutor.UseVisualStyleBackColor = true;
-            this.buttonChooseExecutor.Click += new System.EventHandler(this.buttonChooseExecutor_Click);
+            this.buttonAddExecutors.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.buttonAddExecutors.Location = new System.Drawing.Point(636, 35);
+            this.buttonAddExecutors.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.buttonAddExecutors.Name = "buttonAddExecutors";
+            this.buttonAddExecutors.Size = new System.Drawing.Size(236, 29);
+            this.buttonAddExecutors.TabIndex = 18;
+            this.buttonAddExecutors.Text = "Добавить исполняемые файлы";
+            this.buttonAddExecutors.UseVisualStyleBackColor = true;
+            this.buttonAddExecutors.Click += new System.EventHandler(this.buttonAddExecutors_Click);
             // 
             // textBoxExecutorPath
             // 
             this.textBoxExecutorPath.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.textBoxExecutorPath.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.textBoxExecutorPath.Location = new System.Drawing.Point(19, 69);
+            this.textBoxExecutorPath.Location = new System.Drawing.Point(15, 69);
             this.textBoxExecutorPath.Margin = new System.Windows.Forms.Padding(6, 8, 6, 8);
             this.textBoxExecutorPath.Multiline = true;
             this.textBoxExecutorPath.Name = "textBoxExecutorPath";
             this.textBoxExecutorPath.ReadOnly = true;
             this.textBoxExecutorPath.ScrollBars = System.Windows.Forms.ScrollBars.Both;
-            this.textBoxExecutorPath.Size = new System.Drawing.Size(793, 65);
+            this.textBoxExecutorPath.Size = new System.Drawing.Size(857, 65);
             this.textBoxExecutorPath.TabIndex = 17;
             // 
             // buttonCooseProgramFiles
             // 
-            this.buttonCooseProgramFiles.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.buttonCooseProgramFiles.Location = new System.Drawing.Point(22, 147);
+            this.buttonCooseProgramFiles.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.buttonCooseProgramFiles.Location = new System.Drawing.Point(636, 147);
             this.buttonCooseProgramFiles.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.buttonCooseProgramFiles.Name = "buttonCooseProgramFiles";
-            this.buttonCooseProgramFiles.Size = new System.Drawing.Size(794, 29);
+            this.buttonCooseProgramFiles.Size = new System.Drawing.Size(240, 29);
             this.buttonCooseProgramFiles.TabIndex = 16;
-            this.buttonCooseProgramFiles.Text = "Выбрать файлы программ";
+            this.buttonCooseProgramFiles.Text = "Добавить файлы программ";
             this.buttonCooseProgramFiles.UseVisualStyleBackColor = true;
-            this.buttonCooseProgramFiles.Click += new System.EventHandler(this.buttonChooseProgramFiles_Click);
+            this.buttonCooseProgramFiles.Click += new System.EventHandler(this.buttonAddProgramFiles_Click);
             // 
             // textBoxProgramFiles
             // 
             this.textBoxProgramFiles.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.textBoxProgramFiles.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.textBoxProgramFiles.Location = new System.Drawing.Point(22, 181);
+            this.textBoxProgramFiles.Location = new System.Drawing.Point(15, 181);
             this.textBoxProgramFiles.Margin = new System.Windows.Forms.Padding(6, 8, 6, 8);
             this.textBoxProgramFiles.Multiline = true;
             this.textBoxProgramFiles.Name = "textBoxProgramFiles";
             this.textBoxProgramFiles.ReadOnly = true;
             this.textBoxProgramFiles.ScrollBars = System.Windows.Forms.ScrollBars.Both;
-            this.textBoxProgramFiles.Size = new System.Drawing.Size(794, 93);
+            this.textBoxProgramFiles.Size = new System.Drawing.Size(861, 93);
             this.textBoxProgramFiles.TabIndex = 15;
             // 
             // label2
             // 
             this.label2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(68, 446);
+            this.label2.Location = new System.Drawing.Point(30, 586);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(629, 20);
+            this.label2.Size = new System.Drawing.Size(793, 20);
             this.label2.TabIndex = 21;
-            this.label2.Text = "Количество запусков каждой программы с каждым набором параметров запуска.";
+            this.label2.Text = "или пока количество запусков каждой программы с каждым набором параметров запуска" +
+    " не превысит";
             // 
             // label3
             // 
             this.label3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(68, 478);
+            this.label3.Location = new System.Drawing.Point(68, 628);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(748, 20);
             this.label3.TabIndex = 22;
@@ -214,7 +226,7 @@
             // textBoxNumberOfLaunches
             // 
             this.textBoxNumberOfLaunches.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.textBoxNumberOfLaunches.Location = new System.Drawing.Point(18, 443);
+            this.textBoxNumberOfLaunches.Location = new System.Drawing.Point(829, 583);
             this.textBoxNumberOfLaunches.MaxLength = 4;
             this.textBoxNumberOfLaunches.Name = "textBoxNumberOfLaunches";
             this.textBoxNumberOfLaunches.Size = new System.Drawing.Size(44, 26);
@@ -226,7 +238,7 @@
             // textBoxMaxBackCPUusage
             // 
             this.textBoxMaxBackCPUusage.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.textBoxMaxBackCPUusage.Location = new System.Drawing.Point(18, 475);
+            this.textBoxMaxBackCPUusage.Location = new System.Drawing.Point(18, 625);
             this.textBoxMaxBackCPUusage.MaxLength = 2;
             this.textBoxMaxBackCPUusage.Name = "textBoxMaxBackCPUusage";
             this.textBoxMaxBackCPUusage.Size = new System.Drawing.Size(44, 26);
@@ -239,7 +251,7 @@
             // buttonBegin
             // 
             this.buttonBegin.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.buttonBegin.Location = new System.Drawing.Point(633, 507);
+            this.buttonBegin.Location = new System.Drawing.Point(693, 657);
             this.buttonBegin.Name = "buttonBegin";
             this.buttonBegin.Size = new System.Drawing.Size(179, 29);
             this.buttonBegin.TabIndex = 25;
@@ -251,7 +263,7 @@
             // 
             this.buttonPause.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
             this.buttonPause.Enabled = false;
-            this.buttonPause.Location = new System.Drawing.Point(216, 507);
+            this.buttonPause.Location = new System.Drawing.Point(246, 657);
             this.buttonPause.Name = "buttonPause";
             this.buttonPause.Size = new System.Drawing.Size(179, 29);
             this.buttonPause.TabIndex = 26;
@@ -264,7 +276,7 @@
             // 
             this.buttonCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.buttonCancel.Enabled = false;
-            this.buttonCancel.Location = new System.Drawing.Point(17, 507);
+            this.buttonCancel.Location = new System.Drawing.Point(17, 657);
             this.buttonCancel.Name = "buttonCancel";
             this.buttonCancel.Size = new System.Drawing.Size(179, 29);
             this.buttonCancel.TabIndex = 27;
@@ -281,10 +293,10 @@
             this.dataGridViewLaunchParametrs.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.LaunchParametrs,
             this.Check});
-            this.dataGridViewLaunchParametrs.Location = new System.Drawing.Point(22, 282);
+            this.dataGridViewLaunchParametrs.Location = new System.Drawing.Point(15, 317);
             this.dataGridViewLaunchParametrs.Name = "dataGridViewLaunchParametrs";
             this.dataGridViewLaunchParametrs.RowHeadersWidth = 60;
-            this.dataGridViewLaunchParametrs.Size = new System.Drawing.Size(794, 97);
+            this.dataGridViewLaunchParametrs.Size = new System.Drawing.Size(861, 135);
             this.dataGridViewLaunchParametrs.TabIndex = 28;
             this.dataGridViewLaunchParametrs.RowsAdded += new System.Windows.Forms.DataGridViewRowsAddedEventHandler(this.dataGridViewLaunchParameters_RowsAdded);
             this.dataGridViewLaunchParametrs.RowsRemoved += new System.Windows.Forms.DataGridViewRowsRemovedEventHandler(this.dataGridViewLaunchParameters_RowsRemoved);
@@ -308,9 +320,9 @@
             this.toolStripStatusLabelCPUmem,
             this.toolStripStatusLabelMem,
             this.toolStripStatusLabelTask});
-            this.statusStrip1.Location = new System.Drawing.Point(0, 539);
+            this.statusStrip1.Location = new System.Drawing.Point(0, 689);
             this.statusStrip1.Name = "statusStrip1";
-            this.statusStrip1.Size = new System.Drawing.Size(824, 22);
+            this.statusStrip1.Size = new System.Drawing.Size(884, 22);
             this.statusStrip1.TabIndex = 29;
             this.statusStrip1.Text = "statusStrip1";
             // 
@@ -361,7 +373,7 @@
             // 
             this.buttonContinue.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
             this.buttonContinue.Enabled = false;
-            this.buttonContinue.Location = new System.Drawing.Point(435, 507);
+            this.buttonContinue.Location = new System.Drawing.Point(465, 657);
             this.buttonContinue.Name = "buttonContinue";
             this.buttonContinue.Size = new System.Drawing.Size(179, 29);
             this.buttonContinue.TabIndex = 31;
@@ -376,7 +388,7 @@
             this.checkBoxMemControl.AutoSize = true;
             this.checkBoxMemControl.Checked = true;
             this.checkBoxMemControl.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.checkBoxMemControl.Location = new System.Drawing.Point(52, 386);
+            this.checkBoxMemControl.Location = new System.Drawing.Point(15, 458);
             this.checkBoxMemControl.Name = "checkBoxMemControl";
             this.checkBoxMemControl.Size = new System.Drawing.Size(695, 24);
             this.checkBoxMemControl.TabIndex = 32;
@@ -400,7 +412,7 @@
             // 
             this.label1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(679, 416);
+            this.label1.Location = new System.Drawing.Point(642, 488);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(65, 20);
             this.label1.TabIndex = 35;
@@ -409,7 +421,7 @@
             // textBoxTimeLimit
             // 
             this.textBoxTimeLimit.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.textBoxTimeLimit.Location = new System.Drawing.Point(611, 413);
+            this.textBoxTimeLimit.Location = new System.Drawing.Point(574, 485);
             this.textBoxTimeLimit.Name = "textBoxTimeLimit";
             this.textBoxTimeLimit.Size = new System.Drawing.Size(66, 26);
             this.textBoxTimeLimit.TabIndex = 36;
@@ -420,17 +432,154 @@
             // 
             this.label4.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(67, 416);
+            this.label4.Location = new System.Drawing.Point(30, 488);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(538, 20);
             this.label4.TabIndex = 37;
             this.label4.Text = "Завершать процесс выполнения программы, если он длится дольше";
             // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Location = new System.Drawing.Point(247, 288);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(134, 20);
+            this.label5.TabIndex = 38;
+            this.label5.Text = "Заменить слово";
+            // 
+            // textBox_varWord
+            // 
+            this.textBox_varWord.Location = new System.Drawing.Point(387, 285);
+            this.textBox_varWord.Name = "textBox_varWord";
+            this.textBox_varWord.Size = new System.Drawing.Size(136, 26);
+            this.textBox_varWord.TabIndex = 39;
+            // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.Location = new System.Drawing.Point(529, 288);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(104, 20);
+            this.label6.TabIndex = 40;
+            this.label6.Text = "на диапазон";
+            // 
+            // textBox_leftVal
+            // 
+            this.textBox_leftVal.Location = new System.Drawing.Point(639, 285);
+            this.textBox_leftVal.Name = "textBox_leftVal";
+            this.textBox_leftVal.Size = new System.Drawing.Size(45, 26);
+            this.textBox_leftVal.TabIndex = 41;
+            this.textBox_leftVal.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.textBox_leftVal_KeyPress);
+            // 
+            // label7
+            // 
+            this.label7.AutoSize = true;
+            this.label7.Location = new System.Drawing.Point(690, 288);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(14, 20);
+            this.label7.TabIndex = 42;
+            this.label7.Text = "-";
+            // 
+            // textBox_rightVal
+            // 
+            this.textBox_rightVal.Location = new System.Drawing.Point(710, 285);
+            this.textBox_rightVal.Name = "textBox_rightVal";
+            this.textBox_rightVal.Size = new System.Drawing.Size(45, 26);
+            this.textBox_rightVal.TabIndex = 43;
+            this.textBox_rightVal.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.textBox_rightVal_KeyPress);
+            // 
+            // button_change
+            // 
+            this.button_change.Location = new System.Drawing.Point(761, 285);
+            this.button_change.Name = "button_change";
+            this.button_change.Size = new System.Drawing.Size(100, 26);
+            this.button_change.TabIndex = 44;
+            this.button_change.Text = "Заменить";
+            this.button_change.UseVisualStyleBackColor = true;
+            this.button_change.Click += new System.EventHandler(this.button_change_Click);
+            // 
+            // button_erase
+            // 
+            this.button_erase.Location = new System.Drawing.Point(15, 285);
+            this.button_erase.Name = "button_erase";
+            this.button_erase.Size = new System.Drawing.Size(100, 26);
+            this.button_erase.TabIndex = 45;
+            this.button_erase.Text = "Очистить";
+            this.button_erase.UseVisualStyleBackColor = true;
+            this.button_erase.Click += new System.EventHandler(this.button_erase_Click);
+            // 
+            // buttonClearExecutions
+            // 
+            this.buttonClearExecutions.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.buttonClearExecutions.Location = new System.Drawing.Point(472, 35);
+            this.buttonClearExecutions.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.buttonClearExecutions.Name = "buttonClearExecutions";
+            this.buttonClearExecutions.Size = new System.Drawing.Size(155, 29);
+            this.buttonClearExecutions.TabIndex = 46;
+            this.buttonClearExecutions.Text = "Очистить";
+            this.buttonClearExecutions.UseVisualStyleBackColor = true;
+            this.buttonClearExecutions.Click += new System.EventHandler(this.buttonClearExecutions_Click);
+            // 
+            // buttonClearProgramFiles
+            // 
+            this.buttonClearProgramFiles.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.buttonClearProgramFiles.Location = new System.Drawing.Point(472, 147);
+            this.buttonClearProgramFiles.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.buttonClearProgramFiles.Name = "buttonClearProgramFiles";
+            this.buttonClearProgramFiles.Size = new System.Drawing.Size(155, 29);
+            this.buttonClearProgramFiles.TabIndex = 47;
+            this.buttonClearProgramFiles.Text = "Очистить";
+            this.buttonClearProgramFiles.UseVisualStyleBackColor = true;
+            this.buttonClearProgramFiles.Click += new System.EventHandler(this.buttonClearProgramFiles_Click);
+            // 
+            // label8
+            // 
+            this.label8.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.label8.AutoSize = true;
+            this.label8.Location = new System.Drawing.Point(30, 534);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(536, 20);
+            this.label8.TabIndex = 48;
+            this.label8.Text = "Запускать каждую программу на каждом наборе параметров запуска\r\n";
+            // 
+            // label9
+            // 
+            this.label9.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.label9.AutoSize = true;
+            this.label9.Location = new System.Drawing.Point(374, 554);
+            this.label9.Name = "label9";
+            this.label9.Size = new System.Drawing.Size(449, 20);
+            this.label9.TabIndex = 49;
+            this.label9.Text = "пока среднеквадратичное отклонение не станет меньше";
+            // 
+            // textBox_variance
+            // 
+            this.textBox_variance.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.textBox_variance.Location = new System.Drawing.Point(829, 551);
+            this.textBox_variance.Name = "textBox_variance";
+            this.textBox_variance.Size = new System.Drawing.Size(44, 26);
+            this.textBox_variance.TabIndex = 50;
+            this.textBox_variance.Text = "0";
+            this.textBox_variance.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            // 
             // Main
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(824, 561);
+            this.ClientSize = new System.Drawing.Size(884, 711);
+            this.Controls.Add(this.textBox_variance);
+            this.Controls.Add(this.label9);
+            this.Controls.Add(this.label8);
+            this.Controls.Add(this.buttonClearProgramFiles);
+            this.Controls.Add(this.buttonClearExecutions);
+            this.Controls.Add(this.button_erase);
+            this.Controls.Add(this.button_change);
+            this.Controls.Add(this.textBox_rightVal);
+            this.Controls.Add(this.label7);
+            this.Controls.Add(this.textBox_leftVal);
+            this.Controls.Add(this.label6);
+            this.Controls.Add(this.textBox_varWord);
+            this.Controls.Add(this.label5);
             this.Controls.Add(this.label4);
             this.Controls.Add(this.textBoxTimeLimit);
             this.Controls.Add(this.label1);
@@ -446,7 +595,7 @@
             this.Controls.Add(this.textBoxNumberOfLaunches);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.label2);
-            this.Controls.Add(this.buttonChooseExecutor);
+            this.Controls.Add(this.buttonAddExecutors);
             this.Controls.Add(this.textBoxExecutorPath);
             this.Controls.Add(this.buttonCooseProgramFiles);
             this.Controls.Add(this.textBoxProgramFiles);
@@ -454,7 +603,7 @@
             this.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.MainMenuStrip = this.menuStrip1;
             this.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
-            this.MinimumSize = new System.Drawing.Size(840, 600);
+            this.MinimumSize = new System.Drawing.Size(900, 750);
             this.Name = "Main";
             this.Text = "Программа автоматического сбора статистики выполнения FPTL программ";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form1_FormClosing);
@@ -474,7 +623,7 @@
         private System.Windows.Forms.ToolStripMenuItem выходToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem справкаToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem оПрограммеToolStripMenuItem;
-        private System.Windows.Forms.Button buttonChooseExecutor;
+        private System.Windows.Forms.Button buttonAddExecutors;
         private System.Windows.Forms.TextBox textBoxExecutorPath;
         private System.Windows.Forms.Button buttonCooseProgramFiles;
         private System.Windows.Forms.TextBox textBoxProgramFiles;
@@ -504,6 +653,19 @@
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.TextBox textBoxTimeLimit;
         private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.TextBox textBox_varWord;
+        private System.Windows.Forms.Label label6;
+        private System.Windows.Forms.TextBox textBox_leftVal;
+        private System.Windows.Forms.Label label7;
+        private System.Windows.Forms.TextBox textBox_rightVal;
+        private System.Windows.Forms.Button button_change;
+        private System.Windows.Forms.Button button_erase;
+        private System.Windows.Forms.Button buttonClearExecutions;
+        private System.Windows.Forms.Button buttonClearProgramFiles;
+        private System.Windows.Forms.Label label8;
+        private System.Windows.Forms.Label label9;
+        private System.Windows.Forms.TextBox textBox_variance;
     }
 }
 

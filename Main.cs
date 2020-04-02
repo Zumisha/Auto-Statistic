@@ -18,7 +18,7 @@ using Microsoft.CSharp;
 
 namespace Auto_Statistic
 {
-    public partial class Main : Form
+    public partial class Main: Form
     {
         private const string settingsPath = @".\settings.dat";
         public static Executor.ExecutionParameters windowVars = new Executor.ExecutionParameters();
@@ -38,19 +38,26 @@ namespace Auto_Statistic
             checkBoxMemControl.Checked = windowVars.prohibitUsePageFile;
             textBoxTimeLimit.Text = windowVars.timeLimit.ToString();
             textBoxNumberOfLaunches.Text = windowVars.launchNum.ToString();
+            textBox_variance.Text = windowVars.variance.ToString(CultureInfo.InvariantCulture);
             textBoxMaxBackCPUusage.Text = windowVars.backProcLimit.ToString();
 
+            textBoxExecutorPath.Text = "";
             foreach (string executionFile in windowVars.executionFilesPaths)
             {
                 textBoxExecutorPath.Text += executionFile + Environment.NewLine;
             }
 
+            textBoxProgramFiles.Text = "";
             foreach (string programPath in windowVars.textProgramFilesPaths)
             {
                 textBoxProgramFiles.Text += programPath + Environment.NewLine;
             }
 
+            while (windowVars.referenceResults.Count < windowVars.startParams.Count)
+                windowVars.referenceResults.Add("");
             dataGridViewLaunchParametrs.RowCount = windowVars.startParams.Count+1;
+            dataGridViewLaunchParametrs.Rows[0].Cells[0].Value = "";
+            dataGridViewLaunchParametrs.Rows[0].Cells[1].Value = "";
             for (int i=0; i < windowVars.startParams.Count; ++i)
             {
                 dataGridViewLaunchParametrs.Rows[i].HeaderCell.Value = (i + 1).ToString();
@@ -70,7 +77,8 @@ namespace Auto_Statistic
                     BinaryFormatter formatter = new BinaryFormatter();
                     Executor.ExecutionParameters state = (Executor.ExecutionParameters)formatter.Deserialize(fs);
                     
-                    if (state.launchNum <= 0) state.launchNum = 10;
+                    if (state.launchNum <= 0) state.launchNum = 1;
+                    if (state.variance < 0) state.launchNum = 0;
                     if (state.backProcLimit <= 0 || state.backProcLimit > 100) state.backProcLimit = 100;
 
                     if (state.executionFilesPaths == null) state.executionFilesPaths = new List<string>();
@@ -166,7 +174,7 @@ namespace Auto_Statistic
             Close();
         }
 
-        private void buttonChooseExecutor_Click(object sender, EventArgs e)
+        private void buttonAddExecutors_Click(object sender, EventArgs e)
         {
             OpenFileDialog OPF = new OpenFileDialog
             {
@@ -176,15 +184,14 @@ namespace Auto_Statistic
                 CheckFileExists = true
             };
             if (OPF.ShowDialog() != DialogResult.OK || OPF.FileName == String.Empty) return;
-            windowVars.executionFilesPaths = OPF.FileNames.ToList();
-            textBoxExecutorPath.Text = "";
+            windowVars.executionFilesPaths.AddRange(OPF.FileNames.ToList());
             foreach (string file in OPF.FileNames)
             {
                 textBoxExecutorPath.Text += file + Environment.NewLine;
             }
         }
 
-        private void buttonChooseProgramFiles_Click(object sender, EventArgs e)
+        private void buttonAddProgramFiles_Click(object sender, EventArgs e)
         {
             OpenFileDialog OPF = new OpenFileDialog
             {
@@ -193,8 +200,7 @@ namespace Auto_Statistic
                 CheckFileExists = true
             };
             if (OPF.ShowDialog() != DialogResult.OK || OPF.FileName == String.Empty) return;
-            windowVars.textProgramFilesPaths = OPF.FileNames.ToList();
-            textBoxProgramFiles.Text = "";
+            windowVars.textProgramFilesPaths.AddRange(OPF.FileNames.ToList());
             foreach (string file in OPF.FileNames)
             {
                 textBoxProgramFiles.Text += file + Environment.NewLine;
@@ -214,6 +220,18 @@ namespace Auto_Statistic
         }
 
         private void textBoxTimeLimit_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (e.KeyChar != (char)Keys.Delete && e.KeyChar != (char)Keys.Back && (e.KeyChar < '0' || e.KeyChar > '9'))
+                e.KeyChar = '\0';
+        }
+
+        private void textBox_leftVal_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (e.KeyChar != (char)Keys.Delete && e.KeyChar != (char)Keys.Back && (e.KeyChar < '0' || e.KeyChar > '9'))
+                e.KeyChar = '\0';
+        }
+
+        private void textBox_rightVal_KeyPress(object sender, KeyPressEventArgs e)
         {
             if (e.KeyChar != (char)Keys.Delete && e.KeyChar != (char)Keys.Back && (e.KeyChar < '0' || e.KeyChar > '9'))
                 e.KeyChar = '\0';
@@ -305,6 +323,13 @@ namespace Auto_Statistic
             {
                 windowVars.launchNum = 10;
                 textBoxNumberOfLaunches.Text = windowVars.launchNum.ToString();
+            }
+
+            textBox_variance.Text = textBox_variance.Text.Replace(',', '.');
+            if (!float.TryParse(textBox_variance.Text, NumberStyles.Float, CultureInfo.InvariantCulture, out windowVars.variance) || windowVars.variance < 0)
+            {
+                windowVars.variance = 0;
+                textBox_variance.Text = windowVars.variance.ToString(CultureInfo.InvariantCulture);
             }
 
             if (!Byte.TryParse(textBoxMaxBackCPUusage.Text, out windowVars.backProcLimit))
@@ -467,15 +492,71 @@ namespace Auto_Statistic
             if (checkBoxInterpr.Checked)
             {
                 buttonCooseProgramFiles.Visible = true;
+                buttonClearProgramFiles.Visible = true;
                 textBoxProgramFiles.Visible = true;
                 textBoxExecutorPath.Size = new Size(textBoxExecutorPath.Width, buttonCooseProgramFiles.Top - textBoxExecutorPath.Top - 8);
             }
             else
             {
                 buttonCooseProgramFiles.Visible = false;
+                buttonClearProgramFiles.Visible = false;
                 textBoxProgramFiles.Visible = false;
-                textBoxExecutorPath.Size = new Size(textBoxExecutorPath.Width, dataGridViewLaunchParametrs.Top - textBoxExecutorPath.Top - 8);
+                textBoxExecutorPath.Size = new Size(textBoxExecutorPath.Width, textBox_varWord.Top - textBoxExecutorPath.Top - 8);
             }
+        }
+
+        private void button_change_Click(object sender, EventArgs e)
+        {
+            var varWord = textBox_varWord.Text;
+            if (String.IsNullOrEmpty(varWord)) return;
+
+            Int32.TryParse(textBox_leftVal.Text, out var a);
+            Int32.TryParse(textBox_rightVal.Text, out var b);
+            if (a>b) return;
+
+            ReadFormFields();
+            List<string> newParams = new List<string>();
+            List<string> newResults = new List<string>();
+            while (windowVars.referenceResults.Count < windowVars.startParams.Count)
+                windowVars.referenceResults.Add("");
+            for (var p = 0; p < windowVars.startParams.Count; ++p)
+            {
+                if (windowVars.startParams[p].Contains(varWord))
+                {
+                    for (var i = a; i <= b; ++i)
+                    {
+                        newParams.Add(windowVars.startParams[p].Replace(varWord, i.ToString()));
+                        newResults.Add(windowVars.referenceResults[p]);
+                    }
+                }
+                else
+                {
+                    newParams.Add(windowVars.startParams[p]);
+                    newResults.Add(windowVars.referenceResults[p]);
+                }
+            }
+
+            windowVars.startParams = newParams;
+            windowVars.referenceResults = newResults;
+            InitFields();
+        }
+
+        private void button_erase_Click(object sender, EventArgs e)
+        {
+            windowVars.startParams = new List<string>();
+            InitFields();
+        }
+
+        private void buttonClearExecutions_Click(object sender, EventArgs e)
+        {
+            windowVars.executionFilesPaths.Clear();
+            textBoxExecutorPath.Text = "";
+        }
+
+        private void buttonClearProgramFiles_Click(object sender, EventArgs e)
+        {
+            windowVars.textProgramFilesPaths.Clear();
+            textBoxProgramFiles.Text = "";
         }
     }
 }

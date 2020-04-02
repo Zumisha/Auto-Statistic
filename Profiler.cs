@@ -110,9 +110,14 @@ namespace Auto_Statistic
             {
             }
 
+            //int startInterval = 10;
             Timer statTimer = new Timer(GetCurStat, null, 0, interval);
             Timer saveTimer = new Timer(SaveStoredStats, null, 0, interval * (maxMemHistorySize - 100));
 
+            /*curProcess.WaitForExit(5000);
+            statTimer.Change(0, interval);
+            SaveStoredStats();
+            saveTimer.Change(0, interval * (maxMemHistorySize - 100));*/
             curProcess.WaitForExit(timeLimit);
             if (!curProcess.HasExited)
             {
@@ -191,8 +196,10 @@ namespace Auto_Statistic
             }
         }
 
+        private static readonly Mutex StatMtx = new Mutex();
         private void GetCurStat(object obj = null)
         {
+            StatMtx.WaitOne();
             if (prohibitUsePageFile && SystemStateInfo.AvailableRamSize() < criticalAvailableMemSizeMB)
             {
                 CancelProcess();
@@ -212,12 +219,13 @@ namespace Auto_Statistic
             {
                 History.Add(new StatUnit(curProcCPU, curProcMem, (DateTime.Now - startTime).TotalSeconds));
             }
+            StatMtx.ReleaseMutex();
         }
 
-        private static Mutex mtx = new Mutex();
+        private static readonly Mutex SaveMtx = new Mutex();
         private void SaveStoredStats(object obj = null)
         {
-            mtx.WaitOne();
+            SaveMtx.WaitOne();
             List<StatUnit> histCopy;
             lock (History)
             {
@@ -231,7 +239,7 @@ namespace Auto_Statistic
                     fs.WriteLine(stat.time.ToString("F") +  ";" + stat.cpuUsage.ToString("P2") + ";" + stat.ramUsage.ToString("F"));
                 }
             }
-            mtx.ReleaseMutex();
+            SaveMtx.ReleaseMutex();
         }
 
         public float GetCurProcCpuUsage()
