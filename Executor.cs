@@ -253,7 +253,7 @@ namespace Auto_Statistic
                                     else
                                     {
                                         profiler = new Profiler(executable,
-                                            $@"\{programTextFile}\{result.arguments}",
+                                            $"\"{programTextFile}\" {result.arguments}",
                                             profilerPath,
                                             executionParameters.prohibitUsePageFile,
                                             executionParameters.timeLimit);

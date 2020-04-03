@@ -78,7 +78,7 @@ namespace Auto_Statistic
                     Executor.ExecutionParameters state = (Executor.ExecutionParameters)formatter.Deserialize(fs);
                     
                     if (state.launchNum <= 0) state.launchNum = 1;
-                    if (state.variance < 0) state.launchNum = 0;
+                    if (state.variance < 0) state.variance = 0;
                     if (state.backProcLimit <= 0 || state.backProcLimit > 100) state.backProcLimit = 100;
 
                     if (state.executionFilesPaths == null) state.executionFilesPaths = new List<string>();
@@ -328,7 +328,7 @@ namespace Auto_Statistic
             textBox_variance.Text = textBox_variance.Text.Replace(',', '.');
             if (!float.TryParse(textBox_variance.Text, NumberStyles.Float, CultureInfo.InvariantCulture, out windowVars.variance) || windowVars.variance < 0)
             {
-                windowVars.variance = 0;
+                windowVars.variance = 0.0005f;
                 textBox_variance.Text = windowVars.variance.ToString(CultureInfo.InvariantCulture);
             }
 

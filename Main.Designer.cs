@@ -49,8 +49,6 @@
             this.buttonPause = new System.Windows.Forms.Button();
             this.buttonCancel = new System.Windows.Forms.Button();
             this.dataGridViewLaunchParametrs = new System.Windows.Forms.DataGridView();
-            this.LaunchParametrs = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Check = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.toolStripProgressBar1 = new System.Windows.Forms.ToolStripProgressBar();
             this.toolStripStatusLabelCPUmem = new System.Windows.Forms.ToolStripStatusLabel();
@@ -77,6 +75,8 @@
             this.label8 = new System.Windows.Forms.Label();
             this.label9 = new System.Windows.Forms.Label();
             this.textBox_variance = new System.Windows.Forms.TextBox();
+            this.LaunchParametrs = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Check = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridViewLaunchParametrs)).BeginInit();
             this.statusStrip1.SuspendLayout();
@@ -91,7 +91,7 @@
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
             this.menuStrip1.Padding = new System.Windows.Forms.Padding(9, 3, 0, 3);
-            this.menuStrip1.Size = new System.Drawing.Size(884, 25);
+            this.menuStrip1.Size = new System.Drawing.Size(719, 25);
             this.menuStrip1.TabIndex = 1;
             this.menuStrip1.Text = "menuStrip1";
             // 
@@ -151,7 +151,7 @@
             // buttonAddExecutors
             // 
             this.buttonAddExecutors.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.buttonAddExecutors.Location = new System.Drawing.Point(636, 35);
+            this.buttonAddExecutors.Location = new System.Drawing.Point(468, 35);
             this.buttonAddExecutors.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.buttonAddExecutors.Name = "buttonAddExecutors";
             this.buttonAddExecutors.Size = new System.Drawing.Size(236, 29);
@@ -171,13 +171,13 @@
             this.textBoxExecutorPath.Name = "textBoxExecutorPath";
             this.textBoxExecutorPath.ReadOnly = true;
             this.textBoxExecutorPath.ScrollBars = System.Windows.Forms.ScrollBars.Both;
-            this.textBoxExecutorPath.Size = new System.Drawing.Size(857, 65);
+            this.textBoxExecutorPath.Size = new System.Drawing.Size(689, 65);
             this.textBoxExecutorPath.TabIndex = 17;
             // 
             // buttonCooseProgramFiles
             // 
             this.buttonCooseProgramFiles.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.buttonCooseProgramFiles.Location = new System.Drawing.Point(636, 147);
+            this.buttonCooseProgramFiles.Location = new System.Drawing.Point(464, 147);
             this.buttonCooseProgramFiles.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.buttonCooseProgramFiles.Name = "buttonCooseProgramFiles";
             this.buttonCooseProgramFiles.Size = new System.Drawing.Size(240, 29);
@@ -197,25 +197,24 @@
             this.textBoxProgramFiles.Name = "textBoxProgramFiles";
             this.textBoxProgramFiles.ReadOnly = true;
             this.textBoxProgramFiles.ScrollBars = System.Windows.Forms.ScrollBars.Both;
-            this.textBoxProgramFiles.Size = new System.Drawing.Size(861, 93);
+            this.textBoxProgramFiles.Size = new System.Drawing.Size(689, 93);
             this.textBoxProgramFiles.TabIndex = 15;
             // 
             // label2
             // 
             this.label2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(30, 586);
+            this.label2.Location = new System.Drawing.Point(227, 547);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(793, 20);
+            this.label2.Size = new System.Drawing.Size(339, 20);
             this.label2.TabIndex = 21;
-            this.label2.Text = "или пока количество запусков каждой программы с каждым набором параметров запуска" +
-    " не превысит";
+            this.label2.Text = "или пока количество запусков не превысит";
             // 
             // label3
             // 
             this.label3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(68, 628);
+            this.label3.Location = new System.Drawing.Point(68, 578);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(748, 20);
             this.label3.TabIndex = 22;
@@ -226,10 +225,10 @@
             // textBoxNumberOfLaunches
             // 
             this.textBoxNumberOfLaunches.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.textBoxNumberOfLaunches.Location = new System.Drawing.Point(829, 583);
+            this.textBoxNumberOfLaunches.Location = new System.Drawing.Point(572, 544);
             this.textBoxNumberOfLaunches.MaxLength = 4;
             this.textBoxNumberOfLaunches.Name = "textBoxNumberOfLaunches";
-            this.textBoxNumberOfLaunches.Size = new System.Drawing.Size(44, 26);
+            this.textBoxNumberOfLaunches.Size = new System.Drawing.Size(68, 26);
             this.textBoxNumberOfLaunches.TabIndex = 23;
             this.textBoxNumberOfLaunches.Text = "10";
             this.textBoxNumberOfLaunches.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
@@ -238,7 +237,7 @@
             // textBoxMaxBackCPUusage
             // 
             this.textBoxMaxBackCPUusage.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.textBoxMaxBackCPUusage.Location = new System.Drawing.Point(18, 625);
+            this.textBoxMaxBackCPUusage.Location = new System.Drawing.Point(18, 575);
             this.textBoxMaxBackCPUusage.MaxLength = 2;
             this.textBoxMaxBackCPUusage.Name = "textBoxMaxBackCPUusage";
             this.textBoxMaxBackCPUusage.Size = new System.Drawing.Size(44, 26);
@@ -251,7 +250,7 @@
             // buttonBegin
             // 
             this.buttonBegin.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.buttonBegin.Location = new System.Drawing.Point(693, 657);
+            this.buttonBegin.Location = new System.Drawing.Point(528, 607);
             this.buttonBegin.Name = "buttonBegin";
             this.buttonBegin.Size = new System.Drawing.Size(179, 29);
             this.buttonBegin.TabIndex = 25;
@@ -261,11 +260,11 @@
             // 
             // buttonPause
             // 
-            this.buttonPause.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
+            this.buttonPause.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.buttonPause.Enabled = false;
-            this.buttonPause.Location = new System.Drawing.Point(246, 657);
+            this.buttonPause.Location = new System.Drawing.Point(202, 607);
             this.buttonPause.Name = "buttonPause";
-            this.buttonPause.Size = new System.Drawing.Size(179, 29);
+            this.buttonPause.Size = new System.Drawing.Size(139, 29);
             this.buttonPause.TabIndex = 26;
             this.buttonPause.Text = "Приостановить";
             this.buttonPause.UseVisualStyleBackColor = true;
@@ -276,7 +275,7 @@
             // 
             this.buttonCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.buttonCancel.Enabled = false;
-            this.buttonCancel.Location = new System.Drawing.Point(17, 657);
+            this.buttonCancel.Location = new System.Drawing.Point(17, 607);
             this.buttonCancel.Name = "buttonCancel";
             this.buttonCancel.Size = new System.Drawing.Size(179, 29);
             this.buttonCancel.TabIndex = 27;
@@ -296,22 +295,10 @@
             this.dataGridViewLaunchParametrs.Location = new System.Drawing.Point(15, 317);
             this.dataGridViewLaunchParametrs.Name = "dataGridViewLaunchParametrs";
             this.dataGridViewLaunchParametrs.RowHeadersWidth = 60;
-            this.dataGridViewLaunchParametrs.Size = new System.Drawing.Size(861, 135);
+            this.dataGridViewLaunchParametrs.Size = new System.Drawing.Size(689, 118);
             this.dataGridViewLaunchParametrs.TabIndex = 28;
             this.dataGridViewLaunchParametrs.RowsAdded += new System.Windows.Forms.DataGridViewRowsAddedEventHandler(this.dataGridViewLaunchParameters_RowsAdded);
             this.dataGridViewLaunchParametrs.RowsRemoved += new System.Windows.Forms.DataGridViewRowsRemovedEventHandler(this.dataGridViewLaunchParameters_RowsRemoved);
-            // 
-            // LaunchParametrs
-            // 
-            this.LaunchParametrs.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
-            this.LaunchParametrs.HeaderText = "Параметры запуска";
-            this.LaunchParametrs.Name = "LaunchParametrs";
-            // 
-            // Check
-            // 
-            this.Check.HeaderText = "Проверка";
-            this.Check.Name = "Check";
-            this.Check.Width = 200;
             // 
             // statusStrip1
             // 
@@ -320,9 +307,9 @@
             this.toolStripStatusLabelCPUmem,
             this.toolStripStatusLabelMem,
             this.toolStripStatusLabelTask});
-            this.statusStrip1.Location = new System.Drawing.Point(0, 689);
+            this.statusStrip1.Location = new System.Drawing.Point(0, 639);
             this.statusStrip1.Name = "statusStrip1";
-            this.statusStrip1.Size = new System.Drawing.Size(884, 22);
+            this.statusStrip1.Size = new System.Drawing.Size(719, 22);
             this.statusStrip1.TabIndex = 29;
             this.statusStrip1.Text = "statusStrip1";
             // 
@@ -351,7 +338,7 @@
             // toolStripStatusLabelTask
             // 
             this.toolStripStatusLabelTask.Name = "toolStripStatusLabelTask";
-            this.toolStripStatusLabelTask.Size = new System.Drawing.Size(542, 17);
+            this.toolStripStatusLabelTask.Size = new System.Drawing.Size(437, 17);
             this.toolStripStatusLabelTask.Spring = true;
             this.toolStripStatusLabelTask.Text = " ";
             this.toolStripStatusLabelTask.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -371,11 +358,11 @@
             // 
             // buttonContinue
             // 
-            this.buttonContinue.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
+            this.buttonContinue.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.buttonContinue.Enabled = false;
-            this.buttonContinue.Location = new System.Drawing.Point(465, 657);
+            this.buttonContinue.Location = new System.Drawing.Point(383, 607);
             this.buttonContinue.Name = "buttonContinue";
-            this.buttonContinue.Size = new System.Drawing.Size(179, 29);
+            this.buttonContinue.Size = new System.Drawing.Size(139, 29);
             this.buttonContinue.TabIndex = 31;
             this.buttonContinue.Text = "Продолжить";
             this.buttonContinue.UseVisualStyleBackColor = true;
@@ -388,7 +375,7 @@
             this.checkBoxMemControl.AutoSize = true;
             this.checkBoxMemControl.Checked = true;
             this.checkBoxMemControl.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.checkBoxMemControl.Location = new System.Drawing.Point(15, 458);
+            this.checkBoxMemControl.Location = new System.Drawing.Point(15, 441);
             this.checkBoxMemControl.Name = "checkBoxMemControl";
             this.checkBoxMemControl.Size = new System.Drawing.Size(695, 24);
             this.checkBoxMemControl.TabIndex = 32;
@@ -412,7 +399,7 @@
             // 
             this.label1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(642, 488);
+            this.label1.Location = new System.Drawing.Point(642, 471);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(65, 20);
             this.label1.TabIndex = 35;
@@ -421,7 +408,7 @@
             // textBoxTimeLimit
             // 
             this.textBoxTimeLimit.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.textBoxTimeLimit.Location = new System.Drawing.Point(574, 485);
+            this.textBoxTimeLimit.Location = new System.Drawing.Point(574, 468);
             this.textBoxTimeLimit.Name = "textBoxTimeLimit";
             this.textBoxTimeLimit.Size = new System.Drawing.Size(66, 26);
             this.textBoxTimeLimit.TabIndex = 36;
@@ -432,7 +419,7 @@
             // 
             this.label4.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(30, 488);
+            this.label4.Location = new System.Drawing.Point(30, 471);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(538, 20);
             this.label4.TabIndex = 37;
@@ -440,8 +427,9 @@
             // 
             // label5
             // 
+            this.label5.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(247, 288);
+            this.label5.Location = new System.Drawing.Point(138, 288);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(134, 20);
             this.label5.TabIndex = 38;
@@ -449,15 +437,17 @@
             // 
             // textBox_varWord
             // 
-            this.textBox_varWord.Location = new System.Drawing.Point(387, 285);
+            this.textBox_varWord.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.textBox_varWord.Location = new System.Drawing.Point(278, 285);
             this.textBox_varWord.Name = "textBox_varWord";
-            this.textBox_varWord.Size = new System.Drawing.Size(136, 26);
+            this.textBox_varWord.Size = new System.Drawing.Size(88, 26);
             this.textBox_varWord.TabIndex = 39;
             // 
             // label6
             // 
+            this.label6.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(529, 288);
+            this.label6.Location = new System.Drawing.Point(372, 288);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(104, 20);
             this.label6.TabIndex = 40;
@@ -465,7 +455,8 @@
             // 
             // textBox_leftVal
             // 
-            this.textBox_leftVal.Location = new System.Drawing.Point(639, 285);
+            this.textBox_leftVal.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.textBox_leftVal.Location = new System.Drawing.Point(482, 285);
             this.textBox_leftVal.Name = "textBox_leftVal";
             this.textBox_leftVal.Size = new System.Drawing.Size(45, 26);
             this.textBox_leftVal.TabIndex = 41;
@@ -473,8 +464,9 @@
             // 
             // label7
             // 
+            this.label7.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(690, 288);
+            this.label7.Location = new System.Drawing.Point(533, 288);
             this.label7.Name = "label7";
             this.label7.Size = new System.Drawing.Size(14, 20);
             this.label7.TabIndex = 42;
@@ -482,7 +474,8 @@
             // 
             // textBox_rightVal
             // 
-            this.textBox_rightVal.Location = new System.Drawing.Point(710, 285);
+            this.textBox_rightVal.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.textBox_rightVal.Location = new System.Drawing.Point(553, 285);
             this.textBox_rightVal.Name = "textBox_rightVal";
             this.textBox_rightVal.Size = new System.Drawing.Size(45, 26);
             this.textBox_rightVal.TabIndex = 43;
@@ -490,7 +483,8 @@
             // 
             // button_change
             // 
-            this.button_change.Location = new System.Drawing.Point(761, 285);
+            this.button_change.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.button_change.Location = new System.Drawing.Point(604, 285);
             this.button_change.Name = "button_change";
             this.button_change.Size = new System.Drawing.Size(100, 26);
             this.button_change.TabIndex = 44;
@@ -511,7 +505,7 @@
             // buttonClearExecutions
             // 
             this.buttonClearExecutions.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.buttonClearExecutions.Location = new System.Drawing.Point(472, 35);
+            this.buttonClearExecutions.Location = new System.Drawing.Point(304, 35);
             this.buttonClearExecutions.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.buttonClearExecutions.Name = "buttonClearExecutions";
             this.buttonClearExecutions.Size = new System.Drawing.Size(155, 29);
@@ -523,7 +517,7 @@
             // buttonClearProgramFiles
             // 
             this.buttonClearProgramFiles.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.buttonClearProgramFiles.Location = new System.Drawing.Point(472, 147);
+            this.buttonClearProgramFiles.Location = new System.Drawing.Point(300, 147);
             this.buttonClearProgramFiles.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.buttonClearProgramFiles.Name = "buttonClearProgramFiles";
             this.buttonClearProgramFiles.Size = new System.Drawing.Size(155, 29);
@@ -536,7 +530,7 @@
             // 
             this.label8.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.label8.AutoSize = true;
-            this.label8.Location = new System.Drawing.Point(30, 534);
+            this.label8.Location = new System.Drawing.Point(30, 501);
             this.label8.Name = "label8";
             this.label8.Size = new System.Drawing.Size(536, 20);
             this.label8.TabIndex = 48;
@@ -546,7 +540,7 @@
             // 
             this.label9.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.label9.AutoSize = true;
-            this.label9.Location = new System.Drawing.Point(374, 554);
+            this.label9.Location = new System.Drawing.Point(117, 521);
             this.label9.Name = "label9";
             this.label9.Size = new System.Drawing.Size(449, 20);
             this.label9.TabIndex = 49;
@@ -555,18 +549,30 @@
             // textBox_variance
             // 
             this.textBox_variance.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.textBox_variance.Location = new System.Drawing.Point(829, 551);
+            this.textBox_variance.Location = new System.Drawing.Point(572, 509);
             this.textBox_variance.Name = "textBox_variance";
-            this.textBox_variance.Size = new System.Drawing.Size(44, 26);
+            this.textBox_variance.Size = new System.Drawing.Size(68, 26);
             this.textBox_variance.TabIndex = 50;
-            this.textBox_variance.Text = "0";
+            this.textBox_variance.Text = "0.0005";
             this.textBox_variance.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            // 
+            // LaunchParametrs
+            // 
+            this.LaunchParametrs.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
+            this.LaunchParametrs.HeaderText = "Параметры запуска";
+            this.LaunchParametrs.Name = "LaunchParametrs";
+            // 
+            // Check
+            // 
+            this.Check.HeaderText = "Проверочное значение";
+            this.Check.Name = "Check";
+            this.Check.Width = 210;
             // 
             // Main
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(884, 711);
+            this.ClientSize = new System.Drawing.Size(719, 661);
             this.Controls.Add(this.textBox_variance);
             this.Controls.Add(this.label9);
             this.Controls.Add(this.label8);
@@ -603,7 +609,7 @@
             this.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.MainMenuStrip = this.menuStrip1;
             this.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
-            this.MinimumSize = new System.Drawing.Size(900, 750);
+            this.MinimumSize = new System.Drawing.Size(735, 700);
             this.Name = "Main";
             this.Text = "Программа автоматического сбора статистики выполнения FPTL программ";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form1_FormClosing);
@@ -644,8 +650,6 @@
         private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabelMem;
         private System.Windows.Forms.Button buttonContinue;
         private System.Windows.Forms.CheckBox checkBoxMemControl;
-        private System.Windows.Forms.DataGridViewTextBoxColumn LaunchParametrs;
-        private System.Windows.Forms.DataGridViewTextBoxColumn Check;
         private System.Windows.Forms.ToolStripMenuItem сохранитьКонфигурациюToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem загрузитьКонфигурациюToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem задатьУсловиеПроверкиToolStripMenuItem;
@@ -666,6 +670,8 @@
         private System.Windows.Forms.Label label8;
         private System.Windows.Forms.Label label9;
         private System.Windows.Forms.TextBox textBox_variance;
+        private System.Windows.Forms.DataGridViewTextBoxColumn LaunchParametrs;
+        private System.Windows.Forms.DataGridViewTextBoxColumn Check;
     }
 }
 
