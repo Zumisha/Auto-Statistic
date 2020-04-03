@@ -151,10 +151,10 @@
             // buttonAddExecutors
             // 
             this.buttonAddExecutors.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.buttonAddExecutors.Location = new System.Drawing.Point(468, 35);
+            this.buttonAddExecutors.Location = new System.Drawing.Point(446, 35);
             this.buttonAddExecutors.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.buttonAddExecutors.Name = "buttonAddExecutors";
-            this.buttonAddExecutors.Size = new System.Drawing.Size(236, 29);
+            this.buttonAddExecutors.Size = new System.Drawing.Size(258, 29);
             this.buttonAddExecutors.TabIndex = 18;
             this.buttonAddExecutors.Text = "Добавить исполняемые файлы";
             this.buttonAddExecutors.UseVisualStyleBackColor = true;
@@ -177,10 +177,10 @@
             // buttonCooseProgramFiles
             // 
             this.buttonCooseProgramFiles.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.buttonCooseProgramFiles.Location = new System.Drawing.Point(464, 147);
+            this.buttonCooseProgramFiles.Location = new System.Drawing.Point(446, 147);
             this.buttonCooseProgramFiles.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.buttonCooseProgramFiles.Name = "buttonCooseProgramFiles";
-            this.buttonCooseProgramFiles.Size = new System.Drawing.Size(240, 29);
+            this.buttonCooseProgramFiles.Size = new System.Drawing.Size(258, 29);
             this.buttonCooseProgramFiles.TabIndex = 16;
             this.buttonCooseProgramFiles.Text = "Добавить файлы программ";
             this.buttonCooseProgramFiles.UseVisualStyleBackColor = true;
@@ -505,7 +505,7 @@
             // buttonClearExecutions
             // 
             this.buttonClearExecutions.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.buttonClearExecutions.Location = new System.Drawing.Point(304, 35);
+            this.buttonClearExecutions.Location = new System.Drawing.Point(283, 35);
             this.buttonClearExecutions.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.buttonClearExecutions.Name = "buttonClearExecutions";
             this.buttonClearExecutions.Size = new System.Drawing.Size(155, 29);
@@ -517,7 +517,7 @@
             // buttonClearProgramFiles
             // 
             this.buttonClearProgramFiles.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.buttonClearProgramFiles.Location = new System.Drawing.Point(300, 147);
+            this.buttonClearProgramFiles.Location = new System.Drawing.Point(283, 147);
             this.buttonClearProgramFiles.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.buttonClearProgramFiles.Name = "buttonClearProgramFiles";
             this.buttonClearProgramFiles.Size = new System.Drawing.Size(155, 29);
@@ -611,7 +611,7 @@
             this.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.MinimumSize = new System.Drawing.Size(735, 700);
             this.Name = "Main";
-            this.Text = "Программа автоматического сбора статистики выполнения FPTL программ";
+            this.Text = "Auto-Statistic";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form1_FormClosing);
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();

@@ -75,7 +75,7 @@ namespace Auto_Statistic
             public List<string> referenceResults = new List<string>();
             public string checkAlgorithmText = defaultAlg;
             public ushort launchNum = 10;
-            public float variance = 0;
+            public float variance = 0.0005f;
             public byte backProcLimit = 10;
             public bool prohibitUsePageFile = true;
             public bool Interpr = true;

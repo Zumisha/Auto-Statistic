@@ -78,7 +78,7 @@ namespace Auto_Statistic
                     Executor.ExecutionParameters state = (Executor.ExecutionParameters)formatter.Deserialize(fs);
                     
                     if (state.launchNum <= 0) state.launchNum = 1;
-                    if (state.variance < 0) state.variance = 0;
+                    if (state.variance < 0) state.variance = 0.0005f;
                     if (state.backProcLimit <= 0 || state.backProcLimit > 100) state.backProcLimit = 100;
 
                     if (state.executionFilesPaths == null) state.executionFilesPaths = new List<string>();
