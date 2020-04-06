@@ -23,7 +23,7 @@ namespace Auto_Statistic
         private const string settingsPath = @".\settings.dat";
         public static Executor.ExecutionParameters windowVars = new Executor.ExecutionParameters();
         private Executor executor;
-        public static object checkAlgorithm;
+        public static CheckAlg checkAlgorithm;
 
         public Main()
         {
@@ -126,14 +126,16 @@ namespace Auto_Statistic
                     }
 
                     if (String.IsNullOrEmpty(state.checkAlgorithmText))
-                        state.checkAlgorithmText = Executor.ExecutionParameters.defaultAlg;
-                    CompilerResults res = Executor.compileAlg(state.checkAlgorithmText);
-                    if (res.Errors.Count != 0)
+                        state.checkAlgorithmText = CheckAlg.defaultAlg;
+                    try
                     {
-                        state.checkAlgorithmText = Executor.ExecutionParameters.defaultAlg;
-                        res = Executor.compileAlg(state.checkAlgorithmText);
+                        checkAlgorithm = new CheckAlg(state.checkAlgorithmText);
                     }
-                    checkAlgorithm = res.CompiledAssembly.CreateInstance("Checker.Checker");
+                    catch (Exception)
+                    {
+                        state.checkAlgorithmText = CheckAlg.defaultAlg;
+                        checkAlgorithm = new CheckAlg();
+                    }
 
                     return state;
                 }
@@ -491,6 +493,7 @@ namespace Auto_Statistic
         {
             if (checkBoxInterpr.Checked)
             {
+                windowVars.Interpr = true;
                 buttonCooseProgramFiles.Visible = true;
                 buttonClearProgramFiles.Visible = true;
                 textBoxProgramFiles.Visible = true;
@@ -498,6 +501,7 @@ namespace Auto_Statistic
             }
             else
             {
+                windowVars.Interpr = false;
                 buttonCooseProgramFiles.Visible = false;
                 buttonClearProgramFiles.Visible = false;
                 textBoxProgramFiles.Visible = false;

@@ -1,60 +1,32 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
 using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 using System.Collections.Concurrent;
-using System.Linq.Expressions;
 
 namespace Auto_Statistic
 {
-    class Profiler
+    partial class Profiler
     {
         private readonly Process curProcess;
-        private int interval = 100;
+        private const int startInterval = 10;
+        private const int interval = 100;
         private readonly int timeLimit = 0;
         private readonly bool prohibitUsePageFile;
         private readonly string historySavePath;
-        private PerformanceCounter processCpuUsage;
-        private PerformanceCounter processRamUsage;
         private static readonly double criticalAvailableMemSizeMB = 0.05 * FullSystemInfo.GeneralRamInfo.totalRamSizeMB;
-        private const int maxMemHistorySize = 1024 * 32;
-        private DateTime startTime;
-        private List<StatUnit> History = new List<StatUnit>(maxMemHistorySize);
-        private ProfilerStatistic evalStat;
+        private const int maxMemHistorySize = 1024 * 32; // по 32Б
+        private readonly ConcurrentQueue<StatisticUnit> History = new ConcurrentQueue<StatisticUnit>();
+        private ProfilerResultStatistic evalStat;
         private bool processRunning = false;
         private long statCount;
         private bool processCanceled = false;
         private bool exceededMemory = false;
         private float curProcMem = 0;
         private float curProcCPU = 0;
-
-
-        private struct StatUnit
-        {
-            public readonly float cpuUsage;
-            public readonly float ramUsage;
-            public readonly double time;
-
-            public StatUnit(float cpuUsage, float ramUsage, double time)
-            {
-                this.cpuUsage = cpuUsage;
-                this.ramUsage = ramUsage;
-                this.time = time;
-            }
-
-        }
-        public class ProfilerStatistic
-        {
-            public float maxMemUsage = 0;
-            public float maxCpuUsage = 0;
-            public float avgCpuUsage = 0;
-            public double execTime = 0;
-            public string programResult = "";
-        }
+        private double lastProc = 0;
+        private double lastTotal = 0;
 
         public Profiler(string path, string args, string historySavePath, bool prohibitUsePageFile = true, int timeLimit = 0)
         {
@@ -80,15 +52,13 @@ namespace Auto_Statistic
             else this.timeLimit = 1000 * timeLimit;
         }
 
-        public ProfilerStatistic StartProcess()
+        public ProfilerResultStatistic StartProcess()
         {
-            Mutex startLock = new Mutex();
-            startLock.WaitOne();
             processCanceled = false;
             processRunning = true;
             exceededMemory = false;
             statCount = 0;
-            evalStat = new ProfilerStatistic();
+            evalStat = new ProfilerResultStatistic();
 
             if (File.Exists(historySavePath)) File.SetAttributes(historySavePath, FileAttributes.Normal);
             using (StreamWriter fs = new StreamWriter(File.Create(historySavePath), Encoding.GetEncoding(1251)))
@@ -96,37 +66,24 @@ namespace Auto_Statistic
                 fs.WriteLine("Time;CPU usage;RAM usage");
             }
 
-            startTime = DateTime.Now;
+            Timer statTimer = new Timer(GetCurStat, null, 0, startInterval);
+
             curProcess.Start();
-            curProcess.BeginOutputReadLine();
             curProcess.BeginErrorReadLine();
+            curProcess.BeginOutputReadLine();
             curProcess.PriorityClass = ProcessPriorityClass.BelowNormal;
-            try
-            {
-                processCpuUsage = new PerformanceCounter("Process", "% Processor Time", curProcess.ProcessName);
-                processRamUsage = new PerformanceCounter("Process", "Working Set", curProcess.ProcessName);
-            }
-            catch (Exception exc)
-            {
-            }
 
-            //int startInterval = 10;
-            Timer statTimer = new Timer(GetCurStat, null, 0, interval);
-            Timer saveTimer = new Timer(SaveStoredStats, null, 0, interval * (maxMemHistorySize - 100));
-
-            /*curProcess.WaitForExit(5000);
+            curProcess.WaitForExit(500);
             statTimer.Change(0, interval);
-            SaveStoredStats();
-            saveTimer.Change(0, interval * (maxMemHistorySize - 100));*/
+
             curProcess.WaitForExit(timeLimit);
             if (!curProcess.HasExited)
             {
                 CancelProcess();
             }
 
-            evalStat.execTime = (DateTime.Now - startTime).TotalSeconds;
+            evalStat.execTime = (curProcess.ExitTime - curProcess.StartTime).TotalSeconds;
             statTimer.Dispose();
-            saveTimer.Dispose();
             SaveStoredStats();
 
             processRunning = false;
@@ -136,13 +93,13 @@ namespace Auto_Statistic
         void DataReceived(object sender, DataReceivedEventArgs e)
         {
             if (e.Data != null)
-                evalStat.programResult += Environment.NewLine + e.Data.ToString();
+                evalStat.programResult.AppendLine(e.Data);
         }
 
         void ErrorReceived(object sender, DataReceivedEventArgs e)
         {
             if (e.Data != null)
-                evalStat.programResult += Environment.NewLine + e.Data.ToString();
+                evalStat.programResult.AppendLine(e.Data);
         }
 
         public bool IsProcessRunning()
@@ -167,79 +124,59 @@ namespace Auto_Statistic
                 curProcess.Kill();
                 processCanceled = true;
             }
-            catch (Exception)
+            catch (Exception exc)
             {
+                // Process already stop.
+                Debug.WriteLine(exc.ToString());
             }
         }
 
-        private float CurCpuUsage()
-        {
-            try
-            {
-                return processCpuUsage.NextValue();
-            }
-            catch (Exception)
-            {
-                return 0;
-            }
-        }
-
-        private float CurRamUsage()
-        {
-            try
-            {
-                return processRamUsage.NextValue();
-            }
-            catch (Exception)
-            {
-                return 0;
-            }
-        }
-
-        private static readonly Mutex StatMtx = new Mutex();
         private void GetCurStat(object obj = null)
         {
-            StatMtx.WaitOne();
-            if (prohibitUsePageFile && SystemStateInfo.AvailableRamSize() < criticalAvailableMemSizeMB)
+            try
             {
-                CancelProcess();
-                exceededMemory = true;
-                return;
+                curProcess.Refresh();
+                var newProcessTime = curProcess.TotalProcessorTime.TotalSeconds;
+                var newTotalTime = (DateTime.Now - curProcess.StartTime).TotalSeconds;
+
+                if (prohibitUsePageFile && SystemStateInfo.AvailableRamSize() < criticalAvailableMemSizeMB)
+                {
+                    CancelProcess();
+                    exceededMemory = true;
+                    return;
+                }
+
+                curProcMem = (float)((double)curProcess.WorkingSet64 / 1024 / 1024);
+                curProcCPU = (float)((newProcessTime - lastProc) / Environment.ProcessorCount / (newTotalTime - lastTotal));
+                lastTotal = newTotalTime;
+                lastProc = newProcessTime;
+
+                if (curProcCPU < 0 || curProcCPU > 1 || double.IsNaN(curProcCPU)) curProcCPU = evalStat.avgCpuUsage;
+                if (curProcCPU > evalStat.maxCpuUsage) evalStat.maxCpuUsage = curProcCPU;
+
+                statCount++;
+                evalStat.avgCpuUsage += (curProcCPU - evalStat.avgCpuUsage) / statCount;
+                if (curProcMem > evalStat.maxMemUsage) evalStat.maxMemUsage = curProcMem;
+
+                History.Enqueue(new StatisticUnit(curProcCPU, curProcMem, newTotalTime));
+                if (History.Count >= maxMemHistorySize) SaveStoredStats();
             }
-
-            statCount++;
-            curProcMem = CurRamUsage() / 1024 / 1024;
-            curProcCPU = CurCpuUsage() / SystemStateInfo.TotalCpuUsage();
-            if (curProcCPU < 0 || curProcCPU > 1 || Double.IsNaN(curProcCPU)) curProcCPU = evalStat.avgCpuUsage;
-            if (curProcCPU > evalStat.maxCpuUsage) evalStat.maxCpuUsage = curProcCPU;
-            evalStat.avgCpuUsage += (curProcCPU - evalStat.avgCpuUsage) / statCount;
-            if (curProcMem > evalStat.maxMemUsage) evalStat.maxMemUsage = curProcMem;
-
-            lock (History)
+            catch (Exception exc)
             {
-                History.Add(new StatUnit(curProcCPU, curProcMem, (DateTime.Now - startTime).TotalSeconds));
+                // Process not running.
+                Debug.WriteLine(exc.ToString());
             }
-            StatMtx.ReleaseMutex();
         }
-
-        private static readonly Mutex SaveMtx = new Mutex();
-        private void SaveStoredStats(object obj = null)
+        
+        private void SaveStoredStats()
         {
-            SaveMtx.WaitOne();
-            List<StatUnit> histCopy;
-            lock (History)
-            {
-                histCopy = History;
-                History = new List<StatUnit>(maxMemHistorySize);
-            }
             using (StreamWriter fs = new StreamWriter(File.Open(historySavePath, FileMode.Append), Encoding.GetEncoding(1251)))
             {
-                foreach (StatUnit stat in histCopy)
+                while (History.TryDequeue(out var stat))
                 {
                     fs.WriteLine(stat.time.ToString("F") +  ";" + stat.cpuUsage.ToString("P2") + ";" + stat.ramUsage.ToString("F"));
                 }
             }
-            SaveMtx.ReleaseMutex();
         }
 
         public float GetCurProcCpuUsage()

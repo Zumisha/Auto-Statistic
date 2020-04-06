@@ -27,27 +27,21 @@ namespace Auto_Statistic
 
         private void buttonOk_Click(object sender, EventArgs e)
         {
-            var res = Executor.compileAlg(textBoxAlg.Text);
-            if (res.Errors.Count == 0)
+            try
             {
-                Main.checkAlgorithm = res.CompiledAssembly.CreateInstance("Checker.Checker");
+                Main.checkAlgorithm = new CheckAlg(textBoxAlg.Text);
                 Main.windowVars.checkAlgorithmText = textBoxAlg.Text;
                 Close();
             }
-            else
+            catch(Exception exc)
             {
-                string errors = "";
-                foreach (var error in res.Errors)
-                {
-                    errors += error + "\n";
-                }
-                MessageBox.Show("Не удалось скомпилировать код!\n" + errors, "Ошибка");
+                MessageBox.Show("Не удалось скомпилировать код!\n" + exc.Message, "Ошибка");
             }
         }
 
         private void buttonDefault_Click(object sender, EventArgs e)
         {
-            textBoxAlg.Text = Executor.ExecutionParameters.defaultAlg;
+            textBoxAlg.Text = CheckAlg.defaultAlg;
         }
     }
 }
