@@ -5,10 +5,10 @@ using System.Runtime.InteropServices;
 // Общие сведения об этой сборке предоставляются следующим набором
 // набора атрибутов. Измените значения этих атрибутов, чтобы изменить сведения,
 // связанные со сборкой.
-[assembly: AssemblyTitle("FPTL_Auto_Statistic")]
-[assembly: AssemblyDescription("Программа для автоматического запуска FPTL программ и сбора статистики их выполнения.")]
+[assembly: AssemblyTitle("Auto_Statistic")]
+[assembly: AssemblyDescription("Программа для автоматического сбора статистики выполнения программ.")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("МЭИ, 2019")]
+[assembly: AssemblyCompany("МЭИ, 2020")]
 [assembly: AssemblyProduct("FPTL_Auto_Statistic")]
 [assembly: AssemblyCopyright("Зубов М.И.")]
 [assembly: AssemblyTrademark("")]
