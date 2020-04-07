@@ -5,6 +5,9 @@
 
 # ![Main](https://raw.githubusercontent.com/Zumisha/Auto-Statistic/master/images/Main.png)
 
+### Минимальное влияние на результаты измерений
+# ![ResourcesUsage](https://raw.githubusercontent.com/Zumisha/Auto-Statistic/master/images/ResourcesUsage.png)
+
 ### Может работать как с самостоятельными программами, так и с интерпретируемыми
 Для переключения режима работы используется переключатель в верхнем левом углу окна.
 
@@ -62,9 +65,14 @@
 После завершения процесса сбора статистики будет открыта папка с собранной статистикой.
 
 # ![Ending](https://raw.githubusercontent.com/Zumisha/Auto-Statistic/master/images/Ending.png)
-* В папке "Logs" сохраняется вывод программ (отдельный файл на каждую программу, различные параметры и итерации заметно выделяются в файле).
-* В папке "Profiller" сохраняются файлы со значениями используемых тестируемой программой ресурсов в разные моменты времени её работы (на каждую программу, набор данных и итерацию свой файл)
 * В файле "Results" собирается общая статистика выполнения программ (берётся среднее значение времени и худшее значение используемой памяти из результатов всех итераций программы с данным набором данных).
-* В файле "System-Info" приводятся некоторые характеристики системы, на которой производится тестирование.
-
 # ![Results](https://raw.githubusercontent.com/Zumisha/Auto-Statistic/master/images/Results.png)
+
+* В папке "Logs" сохраняется вывод программ (отдельный файл на каждую программу, различные параметры и итерации заметно выделяются в файле).
+# ![LogFolder](https://raw.githubusercontent.com/Zumisha/Auto-Statistic/master/images/LogFolder.png)
+# ![Log](https://raw.githubusercontent.com/Zumisha/Auto-Statistic/master/images/Log.png)
+* В папке "Profiller" сохраняются файлы со значениями используемых тестируемой программой ресурсов в разные моменты времени её работы (на каждую программу, набор данных и итерацию свой файл)
+# ![ProfilerFolder](https://raw.githubusercontent.com/Zumisha/Auto-Statistic/master/images/ProfilerFolder.png)
+# ![Profiler](https://raw.githubusercontent.com/Zumisha/Auto-Statistic/master/images/Profiler.png)
+* В файле "System-Info" приводятся некоторые характеристики системы, на которой производится тестирование.
+# ![SystemInfo](https://raw.githubusercontent.com/Zumisha/Auto-Statistic/master/images/SystemInfo.png)
