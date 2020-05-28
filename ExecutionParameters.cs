@@ -10,8 +10,11 @@ namespace Auto_Statistic
         {
             public List<string> executionFilesPaths = new List<string>();
             public List<string> textProgramFilesPaths = new List<string>();
+            public List<string> interprParams = new List<string>();
             public List<string> startParams = new List<string>();
             public List<string> referenceResults = new List<string>();
+            public string checkAlgorithmUsingsText = "";
+            public string checkAlgorithmClassesText = "";
             public string checkAlgorithmText = CheckAlg.defaultAlg;
             public ushort launchNum = 10;
             public float variance = 0.0005f;

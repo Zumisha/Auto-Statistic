@@ -17,7 +17,9 @@ namespace Auto_Statistic
         public CheckInput()
         {
             InitializeComponent();
+            textBoxUsing.Text = Main.windowVars.checkAlgorithmUsingsText;
             textBoxAlg.Text = Main.windowVars.checkAlgorithmText;
+            textBox_classes.Text = Main.windowVars.checkAlgorithmClassesText;
         }
 
         private void buttonCancel_Click(object sender, EventArgs e)
@@ -29,8 +31,10 @@ namespace Auto_Statistic
         {
             try
             {
-                Main.checkAlgorithm = new CheckAlg(textBoxAlg.Text);
+                Main.checkAlgorithm = new CheckAlg(textBoxUsing.Text, textBox_classes.Text, textBoxAlg.Text);
                 Main.windowVars.checkAlgorithmText = textBoxAlg.Text;
+                Main.windowVars.checkAlgorithmUsingsText = textBoxUsing.Text;
+                Main.windowVars.checkAlgorithmClassesText = textBox_classes.Text;
                 Close();
             }
             catch(Exception exc)

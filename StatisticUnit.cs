@@ -2,7 +2,7 @@
 {
     partial class Profiler
     {
-        private struct StatisticUnit
+        public struct StatisticUnit
         {
             public readonly double time;
             public readonly float cpuUsage;

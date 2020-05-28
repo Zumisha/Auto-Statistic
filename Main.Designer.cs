@@ -75,6 +75,7 @@
             this.label8 = new System.Windows.Forms.Label();
             this.label9 = new System.Windows.Forms.Label();
             this.textBox_variance = new System.Windows.Forms.TextBox();
+            this.InterprPars = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.LaunchParametrs = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Check = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.menuStrip1.SuspendLayout();
@@ -290,6 +291,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.dataGridViewLaunchParametrs.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dataGridViewLaunchParametrs.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
+            this.InterprPars,
             this.LaunchParametrs,
             this.Check});
             this.dataGridViewLaunchParametrs.Location = new System.Drawing.Point(15, 317);
@@ -556,6 +558,11 @@
             this.textBox_variance.Text = "0.0005";
             this.textBox_variance.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
+            // InterprPars
+            // 
+            this.InterprPars.HeaderText = "Параметры интерпретатора";
+            this.InterprPars.Name = "InterprPars";
+            // 
             // LaunchParametrs
             // 
             this.LaunchParametrs.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
@@ -564,6 +571,7 @@
             // 
             // Check
             // 
+            this.Check.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
             this.Check.HeaderText = "Проверочное значение";
             this.Check.Name = "Check";
             this.Check.Width = 210;
@@ -670,6 +678,7 @@
         private System.Windows.Forms.Label label8;
         private System.Windows.Forms.Label label9;
         private System.Windows.Forms.TextBox textBox_variance;
+        private System.Windows.Forms.DataGridViewTextBoxColumn InterprPars;
         private System.Windows.Forms.DataGridViewTextBoxColumn LaunchParametrs;
         private System.Windows.Forms.DataGridViewTextBoxColumn Check;
     }

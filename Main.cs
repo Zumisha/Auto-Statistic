@@ -14,6 +14,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Auto_Statistic.Storage;
 using Microsoft.CSharp;
 
 namespace Auto_Statistic
@@ -28,6 +29,7 @@ namespace Auto_Statistic
         public Main()
         {
             InitializeComponent();
+            DataBase.Create();
             windowVars = ReadSettingsFile(settingsPath);
             InitFields();
         }
@@ -54,15 +56,25 @@ namespace Auto_Statistic
             }
 
             while (windowVars.referenceResults.Count < windowVars.startParams.Count)
+            {
                 windowVars.referenceResults.Add("");
+            }
+
+            while (windowVars.interprParams.Count < windowVars.startParams.Count)
+            {
+                windowVars.interprParams.Add("");
+            }
+
             dataGridViewLaunchParametrs.RowCount = windowVars.startParams.Count+1;
             dataGridViewLaunchParametrs.Rows[0].Cells[0].Value = "";
             dataGridViewLaunchParametrs.Rows[0].Cells[1].Value = "";
+            dataGridViewLaunchParametrs.Rows[0].Cells[2].Value = "";
             for (int i=0; i < windowVars.startParams.Count; ++i)
             {
                 dataGridViewLaunchParametrs.Rows[i].HeaderCell.Value = (i + 1).ToString();
-                dataGridViewLaunchParametrs.Rows[i].Cells[0].Value = windowVars.startParams[i];
-                dataGridViewLaunchParametrs.Rows[i].Cells[1].Value = windowVars.referenceResults[i];
+                dataGridViewLaunchParametrs.Rows[i].Cells[0].Value = windowVars.interprParams[i];
+                dataGridViewLaunchParametrs.Rows[i].Cells[1].Value = windowVars.startParams[i];
+                dataGridViewLaunchParametrs.Rows[i].Cells[2].Value = windowVars.referenceResults[i];
             }
         }
 
@@ -105,10 +117,16 @@ namespace Auto_Statistic
                         state.textProgramFilesPaths.Remove(programPath);
                     }
 
+                    if (state.interprParams == null) state.interprParams = new List<string>();
                     if (state.startParams == null) state.startParams = new List<string>();
                     if (state.referenceResults == null) state.referenceResults = new List<string>();
+
                     while (state.referenceResults.Count < state.startParams.Count)
                         state.referenceResults.Add("");
+
+                    while (state.interprParams.Count < state.startParams.Count)
+                        state.interprParams.Add("");
+
                     List<int> removeIndexList = new List<int>();
                     for (var i = 0; i < state.startParams.Count; ++i)
                     {
@@ -116,24 +134,36 @@ namespace Auto_Statistic
                         {
                             removeIndexList.Add(i);
                         }
-                        else if (String.IsNullOrEmpty(state.referenceResults[i]))
-                            state.referenceResults[i] = "";
+                        else {
+                            if (String.IsNullOrEmpty(state.referenceResults[i]))
+                                state.referenceResults[i] = "";
+                            if (String.IsNullOrEmpty(state.interprParams[i]))
+                                state.interprParams[i] = "";
+                        }
                     }
                     for (var j = removeIndexList.Count-1; j>=0; --j)
                     {
                         state.startParams.RemoveAt(removeIndexList[j]);
                         state.referenceResults.RemoveAt(removeIndexList[j]);
+                        state.interprParams.RemoveAt(removeIndexList[j]);
                     }
 
                     if (String.IsNullOrEmpty(state.checkAlgorithmText))
+                    {
                         state.checkAlgorithmText = CheckAlg.defaultAlg;
+                        state.checkAlgorithmText = "";
+                        state.checkAlgorithmText = "";
+                    }
+
                     try
                     {
-                        checkAlgorithm = new CheckAlg(state.checkAlgorithmText);
+                        checkAlgorithm = new CheckAlg(state.checkAlgorithmUsingsText, state.checkAlgorithmClassesText, state.checkAlgorithmText);
                     }
                     catch (Exception)
                     {
                         state.checkAlgorithmText = CheckAlg.defaultAlg;
+                        state.checkAlgorithmText = "";
+                        state.checkAlgorithmText = "";
                         checkAlgorithm = new CheckAlg();
                     }
 
@@ -348,18 +378,23 @@ namespace Auto_Statistic
 
             windowVars.startParams.Clear();
             windowVars.referenceResults.Clear();
+            windowVars.interprParams.Clear();
             for (var i = 0; i < dataGridViewLaunchParametrs.Rows.Count - 1; ++i)
             {
-                if (dataGridViewLaunchParametrs.Rows[i].Cells[0].Value == null) continue;
+                if (dataGridViewLaunchParametrs.Rows[i].Cells[1].Value == null) continue;
 
-                var startParam = dataGridViewLaunchParametrs.Rows[i].Cells[0].Value.ToString();
+                var startParam = dataGridViewLaunchParametrs.Rows[i].Cells[1].Value.ToString();
                 if (String.IsNullOrEmpty(startParam)) continue;
-
                 windowVars.startParams.Add(startParam);
 
+                string interprParams = "";
+                if (dataGridViewLaunchParametrs.Rows[i].Cells[0].Value != null)
+                    interprParams = dataGridViewLaunchParametrs.Rows[i].Cells[0].Value.ToString();
+                windowVars.interprParams.Add(interprParams);
+
                 string result = "";
-                if (dataGridViewLaunchParametrs.Rows[i].Cells[1].Value != null)
-                    result = dataGridViewLaunchParametrs.Rows[i].Cells[1].Value.ToString();
+                if (dataGridViewLaunchParametrs.Rows[i].Cells[2].Value != null)
+                    result = dataGridViewLaunchParametrs.Rows[i].Cells[2].Value.ToString();
                 windowVars.referenceResults.Add(result);
             }
         }
@@ -521,8 +556,14 @@ namespace Auto_Statistic
             ReadFormFields();
             List<string> newParams = new List<string>();
             List<string> newResults = new List<string>();
+            List<string> newInterprParams = new List<string>();
+
             while (windowVars.referenceResults.Count < windowVars.startParams.Count)
                 windowVars.referenceResults.Add("");
+
+            while (windowVars.interprParams.Count < windowVars.startParams.Count)
+                windowVars.interprParams.Add("");
+
             for (var p = 0; p < windowVars.startParams.Count; ++p)
             {
                 if (windowVars.startParams[p].Contains(varWord))
@@ -531,17 +572,20 @@ namespace Auto_Statistic
                     {
                         newParams.Add(windowVars.startParams[p].Replace(varWord, i.ToString()));
                         newResults.Add(windowVars.referenceResults[p]);
+                        newInterprParams.Add(windowVars.interprParams[p]);
                     }
                 }
                 else
                 {
                     newParams.Add(windowVars.startParams[p]);
                     newResults.Add(windowVars.referenceResults[p]);
+                    newInterprParams.Add(windowVars.interprParams[p]);
                 }
             }
 
             windowVars.startParams = newParams;
             windowVars.referenceResults = newResults;
+            windowVars.interprParams = newInterprParams;
             InitFields();
         }
 

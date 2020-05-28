@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using Auto_Statistic.Storage;
 
 namespace Auto_Statistic
 {
@@ -13,6 +15,7 @@ namespace Auto_Statistic
         private readonly ExecutionParameters executionParameters;
         private readonly CheckAlg checkAlgorithm;
         private Profiler profiler;
+        private readonly Dictionary<string, object> storage = new Dictionary<string, object>();
 
         private string curPath;
         private readonly int tasksNumber;
@@ -46,6 +49,7 @@ namespace Auto_Statistic
         {
             cancel = false;
             tasksCompleted = 0;
+            // Время необходимо указывать во всех именах файлов, тк эксель не может открыть 2 файла с одинаковым названием.
             string curTime = $"{DateTime.Now:yyyy'-'MM'-'dd'-T'HH'-'mm'-'ss}";
 
             if (!Directory.Exists(resultsFolderPath)) Directory.CreateDirectory(resultsFolderPath);
@@ -78,9 +82,9 @@ namespace Auto_Statistic
                     {
                         resFS.WriteLine(ExecutionResult.CsvEmpty());
 
-                        string executableName = (programTextFile == "")
+                        string executableName = SaveName(string.IsNullOrEmpty(programTextFile)
                             ? Path.GetFileNameWithoutExtension(executable)
-                            : $"{Path.GetFileNameWithoutExtension(executable)}_{Path.GetFileNameWithoutExtension(programTextFile)}";
+                            : $"{Path.GetFileNameWithoutExtension(executable)}_{Path.GetFileNameWithoutExtension(programTextFile)}");
 
                         string logPath = $@"{logsFolderPath}\Log_{executableName}_{curTime}.txt";
                         if (File.Exists(logPath)) File.SetAttributes(logPath, FileAttributes.Normal);
@@ -92,20 +96,22 @@ namespace Auto_Statistic
                                 ExecutionResult executionResult = new ExecutionResult
                                 {
                                     programName = executableName,
+                                    interpArgs = executionParameters.interprParams[par],
                                     arguments = executionParameters.startParams[par],
                                     avgExecTime = 0,
                                     variance = double.NaN,
                                     maxCpuUsage = 0,
                                     maxMemUsage = 0,
                                     avgCpuUsage = 0,
-                                    execStatus = "Success"
+                                    execStatus = ExecutionStatus.Untested
                                 };
 
                                 outLogFS.WriteLine("\n------------------------------------------------------------");
-                                outLogFS.WriteLine(executionResult.arguments);
+                                outLogFS.WriteLine(executionResult.interpArgs + " " + executionResult.arguments);
                                 outLogFS.WriteLine("------------------------------------------------------------");
 
                                 int n = 0;
+                                bool success = false;
                                 for (var iteration = 1; iteration <= executionParameters.launchNum; ++iteration)
                                 {
                                     if (cancel) return;
@@ -113,7 +119,8 @@ namespace Auto_Statistic
                                     progressStatus =
                                         $"Набор №{par + 1}. Проход №{iteration}. {executionResult.programName}";
 
-                                    if (executionResult.execStatus != "Success" ||
+                                    if (executionResult.execStatus != ExecutionStatus.Success &&
+                                        executionResult.execStatus != ExecutionStatus.Untested ||
                                         executionResult.variance < executionParameters.variance)
                                     {
                                         tasksCompleted++;
@@ -126,20 +133,13 @@ namespace Auto_Statistic
 
                                     StringBuilder profilerPathBuilder = new StringBuilder();
                                     profilerPathBuilder.Append($@"{profilerFolderPath}\{executionResult.programName}_");
-                                    foreach (var ch in executionResult.arguments)
-                                    {
-                                        if (!Path.GetInvalidFileNameChars().Contains(ch))
-                                        {
-                                            profilerPathBuilder.Append(ch);
-                                        }
-                                    }
-
+                                    profilerPathBuilder.Append(SaveName(executionResult.interpArgs + " " + executionResult.arguments));
                                     profilerPathBuilder.Append($"_{iteration}_{curTime}.csv");
                                     string profilerPath = profilerPathBuilder.ToString();
 
                                     if (File.Exists(profilerPath))
                                         File.SetAttributes(profilerPath, FileAttributes.Normal);
-                                    if (String.IsNullOrEmpty(programTextFile))
+                                    if (string.IsNullOrEmpty(programTextFile))
                                     {
                                         profiler = new Profiler(executable,
                                             executionResult.arguments,
@@ -150,7 +150,7 @@ namespace Auto_Statistic
                                     else
                                     {
                                         profiler = new Profiler(executable,
-                                            $"\"{programTextFile}\" {executionResult.arguments}",
+                                            $"{executionResult.interpArgs} \"{programTextFile}\" {executionResult.arguments}",
                                             profilerPath,
                                             executionParameters.prohibitUsePageFile,
                                             executionParameters.timeLimit);
@@ -158,64 +158,64 @@ namespace Auto_Statistic
 
                                     Profiler.ProfilerResultStatistic stats = profiler.StartProcess();
 
-                                    string refRes = "";
-                                    if (!String.IsNullOrEmpty(executionParameters.referenceResults[par]))
-                                        refRes = executionParameters.referenceResults[par];
-                                    bool success;
-                                    try
-                                    {
-                                        success = checkAlgorithm.Check(refRes, stats.programResult.ToString());
-                                    }
-                                    catch (Exception exc)
-                                    {
-                                        Main.ShowError("Check error.\n\n", exc.InnerException ?? exc);
-                                        success = false;
-                                    }
-
                                     if (profiler.IsExceededMemory())
                                     {
-                                        executionResult.execStatus = "Exceeded Memory";
+                                        executionResult.execStatus = ExecutionStatus.ExceededMemory;
                                         outLogFS.WriteLine("Exceeded memory!\n");
                                         break;
                                     }
-                                    else if(profiler.IsProcessCanceled())
+                                    else if (profiler.IsProcessCanceled())
                                     {
-                                        executionResult.execStatus = "Canceled";
+                                        executionResult.execStatus = ExecutionStatus.Cancel;
                                         outLogFS.WriteLine("Canceled!\n");
                                     }
-                                    else if (!success)
+                                    else if (executionResult.execStatus == ExecutionStatus.Untested)
                                     {
-                                        executionResult.execStatus = "Errored";
-                                        outLogFS.WriteLine("Errored!\n");
-                                    }
-                                    else
-                                    {
-                                        ++n;
-                                        if (n == 2)
-                                        {
-                                            executionResult.variance =
-                                                Math.Pow(stats.execTime - executionResult.avgExecTime, 2) / 2;
+                                        string refRes = "";
+                                        if (!String.IsNullOrEmpty(executionParameters.referenceResults[par]))
+                                            refRes = executionParameters.referenceResults[par];
 
-                                        }
-                                        else if (n > 2)
+                                        try
                                         {
-                                            executionResult.variance =
-                                                (executionResult.variance +
-                                                 Math.Pow(stats.execTime - executionResult.avgExecTime, 2) / n -
-                                                 executionResult.variance / (n - 1));
+                                            success = checkAlgorithm.Check(refRes, stats.programResult.ToString(),
+                                                storage);
+                                        }
+                                        catch (Exception exc)
+                                        {
+                                            outLogFS.WriteLine($"Errored!\n{exc.InnerException ?? exc}\n");
+                                            //Main.ShowError("Check error.\n\n", exc.InnerException ?? exc);
+                                            success = false;
                                         }
 
-                                        executionResult.avgExecTime =
-                                            executionResult.avgExecTime +
-                                            (stats.execTime - executionResult.avgExecTime) / n;
-                                        executionResult.avgCpuUsage =
-                                            executionResult.avgCpuUsage +
-                                            (stats.avgCpuUsage - executionResult.avgCpuUsage) / n;
-                                        if (executionResult.maxMemUsage < stats.maxMemUsage)
-                                            executionResult.maxMemUsage = stats.maxMemUsage;
-                                        if (executionResult.maxCpuUsage < stats.maxCpuUsage)
-                                            executionResult.maxCpuUsage = stats.maxCpuUsage;
+                                        if (success) executionResult.execStatus = ExecutionStatus.Success;
+                                        else executionResult.execStatus = ExecutionStatus.Error;
                                     }
+
+                                    ++n;
+                                    if (n == 2)
+                                    {
+                                        executionResult.variance =
+                                            Math.Pow(stats.execTime - executionResult.avgExecTime, 2) / 2;
+
+                                    }
+                                    else if (n > 2)
+                                    {
+                                        executionResult.variance =
+                                            (executionResult.variance +
+                                             Math.Pow(stats.execTime - executionResult.avgExecTime, 2) / n -
+                                             executionResult.variance / (n - 1));
+                                    }
+
+                                    executionResult.avgExecTime =
+                                        executionResult.avgExecTime +
+                                        (stats.execTime - executionResult.avgExecTime) / n;
+                                    executionResult.avgCpuUsage =
+                                        executionResult.avgCpuUsage +
+                                        (stats.avgCpuUsage - executionResult.avgCpuUsage) / n;
+                                    if (executionResult.maxMemUsage < stats.maxMemUsage)
+                                        executionResult.maxMemUsage = stats.maxMemUsage;
+                                    if (executionResult.maxCpuUsage < stats.maxCpuUsage)
+                                        executionResult.maxCpuUsage = stats.maxCpuUsage;
 
                                     profiler = null;
 
@@ -224,13 +224,30 @@ namespace Auto_Statistic
                                     tasksCompleted++;
                                 }
 
-                                executionResult.threadsCount = CoreNumParser.parseCoreNum(executionResult.arguments);
+                                executionResult.threadsCount = CoreNumParser.parseCoreNum(executionResult.interpArgs);
                                 resFS.WriteLine(executionResult.CsvResults());
                             }
                     }
                 }
             }
+        }
 
+        private string SaveName(string str)
+        {
+            StringBuilder sb = new StringBuilder();
+            foreach (var ch in str)
+            {
+                if (!Path.GetInvalidFileNameChars().Contains(ch))
+                {
+                    sb.Append(ch);
+                }
+                else
+                {
+                    sb.Append("_");
+                }
+            }
+
+            return sb.ToString();
         }
 
         public string GetResultsPath()

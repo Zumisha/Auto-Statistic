@@ -1,4 +1,5 @@
 ﻿using System;
+using Auto_Statistic.Storage;
 
 namespace Auto_Statistic
 {
@@ -8,6 +9,7 @@ namespace Auto_Statistic
         public struct ExecutionResult
         {
             public string programName;
+            public string interpArgs;
             public string arguments;
             public int threadsCount;
             public double avgExecTime;
@@ -15,9 +17,9 @@ namespace Auto_Statistic
             public float maxMemUsage;
             public float maxCpuUsage;
             public float avgCpuUsage;
-            public string execStatus;
+            public ExecutionStatus execStatus;
 
-            private static string CsvStringBuilder(string programName, string arguments, string threadsCount,
+            private static string CsvStringBuilder(string programName, string interprArgs, string arguments, string threadsCount,
                 string avgExecTime, string variance, string maxMemUsage, string maxCpuUsage, string avgCpuUsage,
                 string execStatus)
             {
@@ -26,20 +28,20 @@ namespace Auto_Statistic
 
             public static string CsvNames()
             {
-                return CsvStringBuilder("Program", "Arguments", "Threads", "Time, s", "Variance", "Max RAM, MB",
+                return CsvStringBuilder("Program", "Interpr Args", "Arguments", "Threads", "Time, s", "Variance", "Max RAM, MB",
                     "Max CPU, %", "Avg CPU, %", "Status");
             }
 
             public static string CsvEmpty()
             {
-                return CsvStringBuilder("", "", "", "", "", "", "", "", "");
+                return CsvStringBuilder("","", "", "", "", "", "", "", "", "");
             }
 
             public string CsvResults()
             {
-                return CsvStringBuilder(programName, arguments, threadsCount.ToString(), avgExecTime.ToString("F3"),
+                return CsvStringBuilder(programName, interpArgs, arguments, threadsCount.ToString(), avgExecTime.ToString("F3"),
                     variance.ToString("F4"), maxMemUsage.ToString("F"), maxCpuUsage.ToString("P2"),
-                    avgCpuUsage.ToString("P2"), execStatus);
+                    avgCpuUsage.ToString("P2"), execStatus.ToString());
             }
         }
     }
