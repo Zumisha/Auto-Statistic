@@ -1,5 +1,6 @@
 # Auto-Statistic
 ![CI](https://github.com/Zumisha/Auto-Statistic/actions/workflows/dotnet-desktop.yml/badge.svg)
+[![GitHub release](https://img.shields.io/github/release/Naereen/StrapDown.js.svg)](https://GitHub.com/Zumisha/Auto-Statistic/releases/)
 
 Решение для автоматизации сбора статистики выполнения программ.
 
