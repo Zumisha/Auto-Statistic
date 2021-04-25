@@ -1,4 +1,6 @@
 # Auto-Statistic
+![CI](https://github.com/Zumisha/Auto-Statistic/workflows/dotnet-desktop.yml/badge.svg)
+
 Решение для автоматизации сбора статистики выполнения программ.
 
 Позволяет производить анализ работы программ и упрощает сравнение эффективности различных версий.
