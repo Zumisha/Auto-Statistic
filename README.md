@@ -1,5 +1,5 @@
 # Auto-Statistic
-![CI](https://github.com/Zumisha/Auto-Statistic/workflows/dotnet-desktop.yml/badge.svg)
+![CI](https://github.com/Zumisha/Auto-Statistic/actions/workflows/dotnet-desktop.yml/badge.svg)
 
 Решение для автоматизации сбора статистики выполнения программ.
 
